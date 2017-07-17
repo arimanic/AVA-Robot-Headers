@@ -34,6 +34,7 @@
 #define numQRD 4
 #define numIR 5
 #define numVars 6
+#define numToys 6
 
 // define a numerical value for each arm position
 // define the voltage reading of the upper and lower Pot for each position.

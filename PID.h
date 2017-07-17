@@ -1,6 +1,15 @@
 #ifndef PID_h
 #define PID_h
 #include <phys253.h>
+
+void setKP(int val);
+
+void setKI(int val);
+
+void setKD(int val);
+
+void setControlGain(int val);
+
 void setSmallErr(int err);
 
 void setMedErr(int err);
@@ -13,14 +22,14 @@ bool getQRD(int QRDnum);
 
 bool atCross();
 
-int getP4(int kp);
+int getP4();
 
-int getP2(int kp);
+int getP2();
 
-double getD(int kd);
+double getD();
 
-double PID4follow(int kp, int ki, int kd, double controlGain);
+double PID4follow();
 
-double PID2follow(int kp, int ki, int kd, double controlGain);
+double PID2follow();
 #endif
 

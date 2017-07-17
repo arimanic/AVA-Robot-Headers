@@ -8,6 +8,7 @@ int smallErr = 4;
 int medErr = 8;
 int largeErr = 12;
 int lastTurn;
+int kp, ki, kd, controlGain;
 
 // D
 int lastError, error, recentError;
@@ -32,10 +33,28 @@ bool sRight2[numQRD] = { 0, 1 };
 bool hardTurn2[numQRD] = { 0, 0 };
 bool QRDs2[2] = { 0 };
 
+void setKP(int val) {
+	kp = val;
+	return;
+}
+
+void setKI(int val) {
+	ki = val;
+	return;
+}
+
+void setKD(int val) {
+	kd = val;
+	return;
+}
+
+void setControlGain(int val) {
+	controlGain = val;
+	return;
+}
 
 
-
-int getP4(int kp) {
+int getP4() {
 	// To make the car turn right P is positive.
 	// If P is negative the car turns left
 	// Sets the error to be used by D control
@@ -77,7 +96,7 @@ int getP4(int kp) {
 	return kp * error;
 }
 
-int getP2(int kp) {
+int getP2() {
 	// To make the car turn right P is positive.
 	// If P is negative the car turns left
 	arraySubset(QRDs, 1, 2, QRDs2);
@@ -103,7 +122,7 @@ int getP2(int kp) {
 	return kp * error;
 }
 
-double getD(int kd) {
+double getD() {
 	// To make the car turn right D is positive.
 	// If D is negative the car turns left
 	// error is set by getPx()
@@ -149,20 +168,20 @@ bool atCross() {
 	return false;
 }
 
-double PID4follow(int kp, int ki, int kd, double controlGain) {
+double PID4follow() {
 	getQRDs();
-	int pCon = getP4(kp);
-	int dCon = getD(kd);
+	int pCon = getP4();
+	int dCon = getD();
 
 	return controlGain * (pCon + dCon);
 
 }
 
-double PID2follow(int kp, int ki, int kd, double controlGain) {
+double PID2follow() {
 
 	getQRDs();
-	int pCon = getP2(kp);
-	int dCon = getD(kd);
+	int pCon = getP2();
+	int dCon = getD();
 
 	return controlGain * (pCon + dCon);
 }
