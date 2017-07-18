@@ -33,7 +33,7 @@
 
 #define numQRD 4
 #define numIR 5
-#define numVars 6
+#define numVars 7
 #define numToys 6
 
 #define PI 3.1415

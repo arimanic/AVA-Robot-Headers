@@ -62,7 +62,26 @@ void setSpeedScale(double val) {
 	return;
 }
 
-void setMotors(int L, int R, int ctrl) {
+int getKP() {
+	return kp;
+}
+
+int getKI() {
+	return ki;
+}
+
+int getKD() {
+	return kd;
+}
+
+int getControlGain() {
+	return controlGain;
+}
+double getSpeedScale() {
+	return speedScale;
+}
+
+void setMotors(double L, double R, int ctrl) {
 	// Calculates and sets motor speed and control
 	motor.speed(RmotorPin, (R + ctrl)*speedScale);
 	motor.speed(LmotorPin, (L - ctrl)*speedScale);

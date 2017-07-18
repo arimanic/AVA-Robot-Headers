@@ -8,6 +8,7 @@ void arraySubset(bool arr[], int startIndex, int newLength, bool newArr[]);
 void arraySubset(int arr[], int startIndex, int newLength, int newArr[]);
 
 void setArray(bool arr[], bool newArr[], int len);
+void setArray(double arr[], double newArr[], int len);
 
 void notArray(bool arr[], int len);
 #endif

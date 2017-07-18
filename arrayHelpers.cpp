@@ -29,6 +29,12 @@ void setArray(bool arr[], bool newArr[], int len) {
 	}
 }
 
+void setArray(double arr[], double newArr[], int len) {
+	for (int i = 0; i < len; i++) {
+		arr[i] = newArr[i];
+	}
+}
+
 void notArray(bool arr[], int len) {
 	for (int i = 0; i < len; i++) {
 		arr[i] = !arr[i];
