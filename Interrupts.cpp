@@ -1,5 +1,6 @@
 
 #include <avr/interrupt.h>
+
 namespace {
 	void(*isr0)();
 	void(*isr1)();

@@ -2,6 +2,10 @@
 #include <globConsts.h>
 #include <arrayHelpers.h>
 #include <Arduino.h>
+#include <math.h>
+#include <motor.h>
+extern motorClass motor;
+
 bool QRDs[numQRD] = { 0 }; // High means on tape
 // P
 int smallErr = 4;
@@ -9,7 +13,7 @@ int medErr = 8;
 int largeErr = 12;
 int lastTurn;
 int kp, ki, kd, controlGain;
-
+double speedScale;
 // D
 int lastError, error, recentError;
 int prevDTime = 0;
@@ -53,7 +57,16 @@ void setControlGain(int val) {
 	return;
 }
 
+void setSpeedScale(double val) {
+	speedScale = val;
+	return;
+}
 
+void setMotors(int L, int R, int ctrl) {
+	// Calculates and sets motor speed and control
+	motor.speed(RmotorPin, (R + ctrl)*speedScale);
+	motor.speed(LmotorPin, (L - ctrl)*speedScale);
+}
 int getP4() {
 	// To make the car turn right P is positive.
 	// If P is negative the car turns left
@@ -158,6 +171,12 @@ void getQRDs() {
 	for (int i = 0; i < numQRD; i++) {
 		QRDs[i] = digitalRead(i);
 	}
+}
+
+double getDist(int ticks) {
+	double rotations = ticks / 24.0;
+	double circumf = 0.25*PI*pow(wheelDiam, 2.0);
+	return rotations * circumf;
 }
 
 bool atCross() {

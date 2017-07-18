@@ -3,7 +3,7 @@
 
 // Things you can change
 // Motor Number Outputs
-#define RmotorPin 2 //// !!!!!! should be 0. 2 for testing
+#define RmotorPin 0
 #define LmotorPin 1
 #define armBaseMotorPin 2
 #define armHingeMotorPin 3
@@ -35,6 +35,9 @@
 #define numIR 5
 #define numVars 6
 #define numToys 6
+
+#define PI 3.1415
+#define wheelDiam 0.072
 
 // define a numerical value for each arm position
 // define the voltage reading of the upper and lower Pot for each position.
