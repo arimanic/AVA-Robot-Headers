@@ -29,7 +29,7 @@
 #define armHingePotPin A5
 #define armBasePotPin A6
 
-#define paramMax 150
+#define paramMax 15
 
 #define numQRD 4
 #define numIR 5
