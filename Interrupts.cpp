@@ -18,7 +18,7 @@ ISR(INT2_vect) {
 ISR(INT3_vect) {
 	(*isr3)();
 }
-ISR(TIMER1_COMPA_vect) {
+ISR(TIMER3_COMPA_vect) {
 	(*timer)();
 }
 
@@ -89,15 +89,16 @@ void attachTimerInterrupt(unsigned int interruptFrequencyHz, void(*f)())
 		{
 
 			cli();
-			TCCR1A = 0;                         /* Clear current comparison value */
-			TCNT1 = 0;                         /* Clear current timer value      */
-			OCR1A = (uint16_t)overflowsNeeded; /* Set timer comparison value     */
-			TCCR1B = (1 << WGM12);              /* Set timer comparison mode      */
-			TCCR1B |= i + 1;                    /* Set timer prescaler value      */
-			TIMSK |= (1 << OCIE1A);            /* Set timer interrupt enable     */
+			TCCR3A = 0;                         /* Clear current comparison value */
+			TCNT3 = 0;                         /* Clear current timer value      */
+			OCR3A = (uint16_t)overflowsNeeded; /* Set timer comparison value     */
+			TCCR3B = (1 << WGM12);              /* Set timer comparison mode      */
+			TCCR3B |= i + 1;                    /* Set timer prescaler value      */
+			ETIMSK |= (1 << OCIE1A);            /* Set timer interrupt enable     */
 			timer = f;
 			sei();
 			return;
+
 		}
 	}
 }
@@ -105,5 +106,5 @@ void attachTimerInterrupt(unsigned int interruptFrequencyHz, void(*f)())
 /* Disables the Timer1 comparison interrupt */
 void detachTimerInterrupt()
 {
-	TIMSK &= ~(1 << OCIE1A);
+	ETIMSK &= ~(1 << OCIE1A);
 }
