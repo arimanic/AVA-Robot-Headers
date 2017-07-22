@@ -1,31 +1,32 @@
 #ifndef PID_h
 #define PID_h
 
-void setKP(int val);
-void setKI(int val);
-void setKD(int val);
-void setControlGain(int val);
+void setKP(double val);
+void setKI(double val);
+void setKD(double val);
+void setControlGain(double val);
 void setSpeedScale(double val);
 
-int getKP();
-int getKI();
-int getKD();
-int getControlGain();
+double getKP();
+double getKI();
+double getKD();
+double getControlGain();
 double getSpeedScale();
+bool getLastTurn();
 
-void setMotors(double L, double R, int ctrl);
+void setMotors(double L, double R, double ctrl);
 
-void setSmallErr(int err);
-void setMedErr(int err);
-void setLargeErr(int err);
+void setSmallErr(double err);
+void setMedErr(double err);
+void setLargeErr(double err);
 
 void getQRDs(bool arrQRD[]);
 bool getQRD(int QRDnum);
 
 bool atCross();
 
-int getP4();
-int getP2();
+double getP4();
+double getP2();
 
 double getD();
 

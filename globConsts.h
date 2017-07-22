@@ -3,10 +3,10 @@
 
 // Things you can change
 // Motor Number Outputs
-#define RmotorPin 0
-#define LmotorPin 1
-#define armBaseMotorPin 2
-#define armHingeMotorPin 3
+#define RmotorPin 1//3
+#define LmotorPin 0// 2
+#define armBaseMotorPin 2// 1
+#define armHingeMotorPin 3//0
 
 // Digital IO pins
 //External Interrupt Pins

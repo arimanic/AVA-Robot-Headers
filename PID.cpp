@@ -8,16 +8,17 @@ extern motorClass motor;
 
 bool QRDs[numQRD] = { 0 }; // High means on tape
 // P
-int smallErr = 4;
-int medErr = 8;
-int largeErr = 12;
+double smallErr = 4;
+double medErr = 8;
+double largeErr = 12;
+double hugeErr = 20;
 int lastTurn;
-int kp, ki, kd, controlGain;
+double kp, ki, kd, controlGain;
 double speedScale;
 // D
-int lastError, error, recentError;
-int prevDTime = 0;
-int curDTime = 0;
+double lastError, error, recentError;
+long prevDTime = 0;
+long curDTime = 0;
 
 // 4QRD arrays
 bool straight4[numQRD] = { 0, 1, 1, 0 };
@@ -37,22 +38,22 @@ bool sRight2[numQRD] = { 0, 1 };
 bool hardTurn2[numQRD] = { 0, 0 };
 bool QRDs2[2] = { 0 };
 
-void setKP(int val) {
+void setKP(double val) {
 	kp = val;
 	return;
 }
 
-void setKI(int val) {
+void setKI(double val) {
 	ki = val;
 	return;
 }
 
-void setKD(int val) {
+void setKD(double val) {
 	kd = val;
 	return;
 }
 
-void setControlGain(int val) {
+void setControlGain(double val) {
 	controlGain = val;
 	return;
 }
@@ -62,31 +63,31 @@ void setSpeedScale(double val) {
 	return;
 }
 
-int getKP() {
+double getKP() {
 	return kp;
 }
 
-int getKI() {
+double getKI() {
 	return ki;
 }
 
-int getKD() {
+double getKD() {
 	return kd;
 }
 
-int getControlGain() {
+double getControlGain() {
 	return controlGain;
 }
 double getSpeedScale() {
 	return speedScale;
 }
 
-void setMotors(double L, double R, int ctrl) {
+void setMotors(double L, double R, double ctrl) {
 	// Calculates and sets motor speed and control
 	motor.speed(RmotorPin, (R + ctrl)*speedScale);
 	motor.speed(LmotorPin, (L - ctrl)*speedScale);
 }
-int getP4() {
+double getP4() {
 	// To make the car turn right P is positive.
 	// If P is negative the car turns left
 	// Sets the error to be used by D control
@@ -119,16 +120,16 @@ int getP4() {
 	}
 	else if (arrayEquals(QRDs, hardTurn4, numQRD)) {
 		if (lastTurn == 1) {
-			error = -largeErr - smallErr;
+			error = -hugeErr;
 		}
 		else if (lastTurn == 0) {
-			error = largeErr + smallErr;
+			error = hugeErr;
 		}
 	}
 	return kp * error;
 }
 
-int getP2() {
+double getP2() {
 	// To make the car turn right P is positive.
 	// If P is negative the car turns left
 	arraySubset(QRDs, 1, 2, QRDs2);
@@ -166,35 +167,36 @@ double getD() {
 	}
 	curDTime++;
 	lastError = error;
-	return ((double)kd * (error - recentError)) / ((double)(prevDTime + curDTime));
+	return ((double)kd * 300 * (error - recentError)) / ((long double)(prevDTime + curDTime));
 
 }
 
-void setSmallErr(int err) {
+void setSmallErr(double err) {
 	smallErr = err;
 	return;
 }
 
-void setMedErr(int err) {
+void setMedErr(double err) {
 	medErr = err;
 	return;
 }
 
-void setLargeErr(int err) {
+void setLargeErr(double err) {
 	largeErr = err;
 	return;
 }
 
 void getQRDs() {
 	// Reads all QRD sensors and stores boolean values in QRDs array
-	for (int i = 0; i < numQRD; i++) {
-		QRDs[i] = digitalRead(i);
-	}
+	QRDs[0] = digitalRead(QRD0pin);
+	QRDs[1] = digitalRead(QRD1pin);
+	QRDs[2] = digitalRead(QRD2pin);
+	QRDs[3] = digitalRead(QRD3pin);
 }
 
 double getDist(int ticks) {
 	double rotations = ticks / 24.0;
-	double circumf = 0.25*PI*pow(wheelDiam, 2.0);
+	double circumf = PI*wheelDiam;
 	return rotations * circumf;
 }
 
@@ -206,27 +208,31 @@ bool atCross() {
 	return false;
 }
 
-double PID4follow() {
+double PID4follow()
+{
 	getQRDs();
-	int pCon = getP4();
-	int dCon = getD();
-
-	return controlGain * (pCon + dCon);
-
+	double pCon = getP4();
+	double dCon = getD();
+	double con = controlGain * (pCon + dCon);
+	setMotors(255, 255, con);
+	return con;
 }
 
 double PID2follow() {
-
 	getQRDs();
-	int pCon = getP2();
-	int dCon = getD();
-
-	return controlGain * (pCon + dCon);
+	double pCon = getP2();
+	double dCon = getD();
+	double con = controlGain * (pCon + dCon);
+	setMotors(255, 255, con);
+	return con;
 }
 
 bool getQRD(int QRDnum) {
 	// Reads the given QRD sensor and stores boolean value in QRDs array 
 	// Returns true or false for the given QRD
-	QRDs[QRDnum] = digitalRead(QRDnum);
 	return QRDs[QRDnum];
+}
+
+bool getLastTurn() {
+	return lastTurn;
 }
