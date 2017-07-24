@@ -40,3 +40,11 @@ void notArray(bool arr[], int len) {
 		arr[i] = !arr[i];
 	}
 }
+
+int arr2bin4(bool arr[]) {
+	return 1 * arr[0] + 2 * arr[1] + 4 * arr[2] + arr[4];
+}
+
+int arr2bin2(bool arr[]) {
+	return 1 * arr[0] + 2 * arr[1];
+}

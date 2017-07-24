@@ -13,6 +13,10 @@
 #define LSonarPin 1
 #define RSonarPin 2
 #define distanceCounter 3
+
+#define trigPin 37
+#define echoPin 2
+
 // Standard Digital IO pins
 #define QRD0pin 4
 #define QRD1pin 5
@@ -35,6 +39,7 @@
 #define numIR 5
 #define numVars 7
 #define numToys 6
+#define overflowsNeeded (61 + 9.0/255.0);
 
 #define PI 3.1415
 #define wheelDiam 0.072

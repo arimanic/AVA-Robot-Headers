@@ -16,7 +16,7 @@ static volatile servo_t servo[MAX_SERVO_CHANNELS];
 static volatile uint8_t currentChannel = 0;
 static volatile uint8_t overflows = 2;
 
-ISR (TIMER2_OVF_vect)
+ISR (TIMER3_OVF_vect)
 {
     overflows = overflows >= 2 ? 0 : overflows + 1;
     if (overflows == 0)

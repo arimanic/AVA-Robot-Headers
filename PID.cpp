@@ -20,22 +20,24 @@ double lastError, error, recentError;
 long prevDTime = 0;
 long curDTime = 0;
 
-// 4QRD arrays
-bool straight4[numQRD] = { 0, 1, 1, 0 };
-bool sLeft4[numQRD] = { 0, 1, 0, 0 };
-bool sRight4[numQRD] = { 0, 0, 1, 0 };
-bool mLeft4[numQRD] = { 1, 1, 0, 0 };
-bool mRight4[numQRD] = { 0, 0, 1, 1 };
-bool hLeft4[numQRD] = { 1, 0, 0, 0 };
-bool hRight4[numQRD] = { 0, 0, 0, 1 };
-bool hardTurn4[numQRD] = { 0, 0, 0, 0 };
-bool cross[numQRD] = { 1, 0, 0, 1 }; // middle two entries do not matter
+// 4QRD
+
+#define straight4  6 // { 0, 1, 1, 0 };
+#define sLeft4  2 // { 0, 1, 0, 0 };
+#define sRight4  4 // { 0, 0, 1, 0 };
+#define mLeft4  3 // { 1, 1, 0, 0 };
+#define mRight4  12 //{ 0, 0, 1, 1 };
+#define hLeft4  1 //{ 1, 0, 0, 0 };
+#define hRight4  8 //{ 0, 0, 0, 1 };
+#define hardTurn4  0 //{ 0, 0, 0, 0 };
+
+int cross = 9; //{ 1, 0, 0, 1 }; // middle two entries do not matter
 
 // 2QRD arrays
-bool straight2[numQRD] = { 1, 1 };
-bool sLeft2[numQRD] = { 1, 0 };
-bool sRight2[numQRD] = { 0, 1 };
-bool hardTurn2[numQRD] = { 0, 0 };
+#define straight2  3 //{ 1, 1 };
+#define sLeft2  1 //{ 1, 0 };
+#define sRight2  2 //{ 0, 1 };
+#define hardTurn2  0 //{ 0, 0 };
 bool QRDs2[2] = { 0 };
 
 void setKP(double val) {
@@ -88,10 +90,61 @@ void setMotors(double L, double R, double ctrl) {
 	motor.speed(LmotorPin, (L - ctrl)*speedScale);
 }
 double getP4() {
-	// To make the car turn right P is positive.
-	// If P is negative the car turns left
+	// To make the car turn left P is positive.
+	// If P is negative the car turns right
 	// Sets the error to be used by D control
-	if (arrayEquals(QRDs, straight4, numQRD)) {
+
+	int bin4 = arr2bin4(QRDs);
+
+	switch (bin4) {
+	case straight4:
+	error = 0;
+	break;
+
+	case sLeft4:
+		error = -smallErr;
+		lastTurn = 1;
+		break;
+
+	case sRight4:
+		error = smallErr;
+		lastTurn = 0;
+		break;
+
+	case mLeft4:
+		error = -medErr;
+		lastTurn = 1;
+		break;
+
+	case mRight4:
+		error = medErr;
+		lastTurn = 0;
+		break;
+
+	case hLeft4:
+		error = -largeErr;
+		lastTurn = 1;
+		break;
+
+	case hRight4:
+		error = largeErr;
+		lastTurn = 0;
+		break;
+
+	case hardTurn4:
+		if (lastTurn == 1) {
+			error = -hugeErr;
+		}
+		else if (lastTurn == 0) {
+			error = hugeErr;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	/*if (arrayEquals(QRDs, straight4, numQRD)) {
 		error = 0;
 	}
 	else if (arrayEquals(QRDs, sLeft4, numQRD)) {
@@ -125,7 +178,7 @@ double getP4() {
 		else if (lastTurn == 0) {
 			error = hugeErr;
 		}
-	}
+	}*/
 	return kp * error;
 }
 
@@ -133,31 +186,42 @@ double getP2() {
 	// To make the car turn right P is positive.
 	// If P is negative the car turns left
 	arraySubset(QRDs, 1, 2, QRDs2);
-	if (arrayEquals(QRDs2, straight2, numQRD)) {
-		error = 0;
-	}
-	else if (arrayEquals(QRDs2, sLeft2, numQRD)) {
+
+	int bin2 = arr2bin2(QRDs2);
+
+	switch (bin2) {
+	case straight2:
+	error = 0;
+	break;
+
+	case sLeft2:
 		error = -smallErr;
 		lastTurn = 1;
-	}
-	else if (arrayEquals(QRDs2, sRight2, numQRD)) {
+		break;
+
+	case sRight2:
 		error = smallErr;
 		lastTurn = 0;
-	}
-	else if (arrayEquals(QRDs2, hardTurn2, numQRD)) {
+		break;
+
+	case hardTurn2:
 		if (lastTurn == 1) {
 			error = -medErr;
 		}
 		else if (lastTurn == 0) {
 			error = medErr;
 		}
+		break;
+
+	default:
+		break;
 	}
 	return kp * error;
 }
 
 double getD() {
-	// To make the car turn right D is positive.
-	// If D is negative the car turns left
+	// To make the car turn left D is positive.
+	// If D is negative the car turns right
 	// error is set by getPx()
 
 	if (lastError != error) {
@@ -167,7 +231,7 @@ double getD() {
 	}
 	curDTime++;
 	lastError = error;
-	return ((double)kd * 300 * (error - recentError)) / ((long double)(prevDTime + curDTime));
+	return ((double)kd * 200 * (error - recentError)) / ((long double)(prevDTime + curDTime));
 
 }
 
