@@ -14,7 +14,13 @@
 //#include <Tone.cpp>
 #include <ServoTINAH.h>
 
+LiquidCrystal LCD(26, 27, 28, 16, 17, 18, 19, 20, 21, 22, 23);
 
+motorClass motor;
+
+ServoTINAH RCServo0;    // declare variables for up to eight servos.   Replaced old Servo253 implementation 2015Jan2
+ServoTINAH RCServo1;
+ServoTINAH RCServo2;
 
 /* Displays an error when TINAH is not selected as the board */
 // #if !defined(__AVR_ATmega128__) 
@@ -23,15 +29,6 @@
 
 
 //setup the variables and classes used throughout phys 253.
-
-LiquidCrystal LCD(26,27,28,16, 17, 18, 19,20,21,22,23);
-
-
-motorClass motor ;
-
-ServoTINAH RCServo0;    // declare variables for up to eight servos.   Replaced old Servo253 implementation 2015Jan2
-ServoTINAH RCServo1; 
-ServoTINAH RCServo2;
 
 
 int knob(int value) ;	//	{ return analogRead(knobInput[value]) ;}

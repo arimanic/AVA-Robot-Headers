@@ -2,6 +2,7 @@
 #include "motor.h"
 
 
+
 int knob(int value) 		{ return analogRead(knobInput[value]) ;}
 void buzzer	(int value) { return ;} //   pulseOut(buzzerOutput, value*2) ;}
 void buzzerOff () 	    { return ;} //   pulseStop(buzzerOutput ) ;}
