@@ -14,7 +14,7 @@
 #define RSonarPin 2
 #define distanceCounter 3
 
-#define trigPin 37
+#define trigPin 31
 #define echoPin 2
 
 // Standard Digital IO pins
@@ -37,7 +37,7 @@
 
 #define numQRD 4
 #define numIR 5
-#define numVars 7
+#define numVars 8
 #define numToys 6
 #define overflowsNeeded (61 + 9.0/255.0);
 

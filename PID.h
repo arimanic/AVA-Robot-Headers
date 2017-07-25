@@ -20,7 +20,7 @@ void setSmallErr(double err);
 void setMedErr(double err);
 void setLargeErr(double err);
 
-void getQRDs(bool arrQRD[]);
+void getQRDs();
 bool getQRD(int QRDnum);
 
 bool atCross();
@@ -34,5 +34,6 @@ double PID4follow();
 double PID2follow();
 
 double getDist(int ticks);
+
 #endif
 

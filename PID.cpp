@@ -98,8 +98,8 @@ double getP4() {
 
 	switch (bin4) {
 	case straight4:
-	error = 0;
-	break;
+		error = 0;
+		break;
 
 	case sLeft4:
 		error = -smallErr;
@@ -144,41 +144,6 @@ double getP4() {
 		break;
 	}
 
-	/*if (arrayEquals(QRDs, straight4, numQRD)) {
-		error = 0;
-	}
-	else if (arrayEquals(QRDs, sLeft4, numQRD)) {
-		error = -smallErr;
-		lastTurn = 1;
-	}
-	else if (arrayEquals(QRDs, sRight4, numQRD)) {
-		error = smallErr;
-		lastTurn = 0;
-	}
-	else if (arrayEquals(QRDs, mLeft4, numQRD)) {
-		error = -medErr;
-		lastTurn = 1;
-	}
-	else if (arrayEquals(QRDs, mRight4, numQRD)) {
-		error = medErr;
-		lastTurn = 0;
-	}
-	else if (arrayEquals(QRDs, hLeft4, numQRD)) {
-		error = -largeErr;
-		lastTurn = 1;
-	}
-	else if (arrayEquals(QRDs, hRight4, numQRD)) {
-		error = largeErr;
-		lastTurn = 0;
-	}
-	else if (arrayEquals(QRDs, hardTurn4, numQRD)) {
-		if (lastTurn == 1) {
-			error = -hugeErr;
-		}
-		else if (lastTurn == 0) {
-			error = hugeErr;
-		}
-	}*/
 	return kp * error;
 }
 
@@ -231,8 +196,11 @@ double getD() {
 	}
 	curDTime++;
 	lastError = error;
-	return ((double)kd * 200 * (error - recentError)) / ((long double)(prevDTime + curDTime));
 
+	if (abs(error) < abs(recentError)) {
+		return ((double)kd * 200 * (error - recentError)) / ((long double)(prevDTime + curDTime));
+	}
+	return 0;
 }
 
 void setSmallErr(double err) {
@@ -256,6 +224,7 @@ void getQRDs() {
 	QRDs[1] = digitalRead(QRD1pin);
 	QRDs[2] = digitalRead(QRD2pin);
 	QRDs[3] = digitalRead(QRD3pin);
+	
 }
 
 double getDist(int ticks) {
@@ -294,9 +263,11 @@ double PID2follow() {
 bool getQRD(int QRDnum) {
 	// Reads the given QRD sensor and stores boolean value in QRDs array 
 	// Returns true or false for the given QRD
+	
 	return QRDs[QRDnum];
 }
 
 bool getLastTurn() {
 	return lastTurn;
 }
+

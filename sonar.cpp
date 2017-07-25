@@ -30,9 +30,7 @@ void outPulse() {
 
 	offTime = overflowCount;
 	digitalWrite(trigPin, LOW);
-	// delay
 	digitalWrite(trigPin, HIGH);
-	// delay
 	digitalWrite(trigPin, LOW);
 
 }
@@ -43,4 +41,8 @@ double getSonarThresh() {
 
 double getOffTime() {
 	return offTime;
+}
+
+void setSonarThresh(double val) {
+	sonarThresh = val;
 }

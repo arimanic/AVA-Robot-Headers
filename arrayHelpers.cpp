@@ -42,9 +42,15 @@ void notArray(bool arr[], int len) {
 }
 
 int arr2bin4(bool arr[]) {
-	return 1 * arr[0] + 2 * arr[1] + 4 * arr[2] + arr[4];
+	int a = arr[0];
+	int b = arr[1];
+	int c = arr[2];
+	int d = arr[3];
+
+	return 1 * a + 2 * b + 4 * c + 8 * d;
 }
 
 int arr2bin2(bool arr[]) {
-	return 1 * arr[0] + 2 * arr[1];
+	int x = 1 * arr[0] + 2 * arr[1];
+	return x;
 }
