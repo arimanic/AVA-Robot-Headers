@@ -12,7 +12,7 @@ extern LiquidCrystal LCD;
 extern int startbutton();
 extern int stopbutton();
 
-String params[] = { "P", "I", "D", "G", "T", "Speed ", "X", "S Thresh" };
+String params[] = { "P", "I", "D", "G", "T", "FSpeed ",  "RSpeed ", "X", "S Thresh" };
 double vars[numVars] = { 0 };
 
 void menu() {
@@ -26,7 +26,8 @@ void menu() {
 	vars[2] = getKD();
 	vars[3] = getControlGain();
 	vars[4] = getIRThresh();
-	vars[5] = getSpeedScale();
+	vars[5] = getFlatSpeed();
+	vars[6] = getRampSpeed();
 
 	LCD.clear();
 
@@ -48,14 +49,14 @@ void menu() {
 			if (params[param] == "T") {
 				var = analogRead(6);
 			}
-			else if (params[param] == "Speed ") {
+			else if (params[param] == "FSpeed " || params[param] == "RSpeed ") {
 				var = analogRead(6) / 1023.0;
 			}
 			else if (params[param] == "X") {
 				var = doubleMap(analogRead(6), 0, 1023, 0, 1);
 			}
 			else {
-				var = doubleMap(analogRead(6), 0, 1023, 0, paramMax);
+				var = doubleMap(analogRead(6), 0, 1023, -10, paramMax);
 			}
 
 			if (params[param] == "X") {
@@ -100,9 +101,9 @@ void menu() {
 			setKD(vars[2]);
 			setControlGain(vars[3]);
 			setIRThresh(vars[4]);
-			setSpeedScale(vars[5]);
-			
-			setSonarThresh(vars[7]);
+			setFlatSpeed(vars[5]);
+			setRampSpeed(vars[6]);
+			setSonarThresh(vars[8]);
 			LCD.clear();
 			return;
 
@@ -153,14 +154,15 @@ void printParams() {
 	LCD.print(" "); */
 }
 
-void initConsts(double p, double i, double d, double g, double t, double s, int x, double son) {
-	double arr[numVars] = { p, i, d, g, t, s, x, son };
+void initConsts(double p, double i, double d, double g, double t, double f, double r, int x, double son) {
+	double arr[numVars] = { p, i, d, g, t, f, r, x, son };
 	setArray(vars, arr, numVars);
 	setKP(p);
 	setKI(i);
 	setKD(d);
 	setControlGain(g);
-	setSpeedScale(s);
+	setFlatSpeed(f);
+	setRampSpeed(r);
 	setIRThresh(t);
 	setSonarThresh(son);
 }

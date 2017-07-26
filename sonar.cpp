@@ -1,10 +1,10 @@
 #include <sonar.h>
 #include <Arduino.h>
 #include <globConsts.h>
-
+#include "timing.h"
 double sonarThresh;
 double offTime;
-extern long overflowCount;
+extern long timeElapsed;
 /*
 void sonar() {
 	offTime = overflowCount;
@@ -28,7 +28,7 @@ void sonar() {
 
 void outPulse() {
 
-	offTime = overflowCount;
+	offTime = seconds();
 	digitalWrite(trigPin, LOW);
 	digitalWrite(trigPin, HIGH);
 	digitalWrite(trigPin, LOW);

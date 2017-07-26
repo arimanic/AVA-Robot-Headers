@@ -6,12 +6,18 @@ void setKI(double val);
 void setKD(double val);
 void setControlGain(double val);
 void setSpeedScale(double val);
+void setRampSpeed(double val);
+void setFlatSpeed(double val);
 
 double getKP();
 double getKI();
 double getKD();
 double getControlGain();
 double getSpeedScale();
+double getRampSpeed();
+double getFlatSpeed();
+
+
 bool getLastTurn();
 
 void setMotors(double L, double R, double ctrl);

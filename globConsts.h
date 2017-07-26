@@ -33,37 +33,21 @@
 #define armHingePotPin A5
 #define armBasePotPin A6
 
-#define paramMax 15
+#define paramMax 50
 
 #define numQRD 4
 #define numIR 5
-#define numVars 8
+#define numVars 9
 #define numToys 6
 #define overflowsNeeded (61 + 9.0/255.0);
 
 #define PI 3.1415
 #define wheelDiam 0.072
 
-// define a numerical value for each arm position
-// define the voltage reading of the upper and lower Pot for each position.
-// There are 4 positions: Driving   (D)
-//                        Collecting (C)
-//                        Fishing   (F)
-//                        Zipline   (Z)
-#define drivePos 0
-#define baseD 0
-#define hingeD 5
-
-#define collectPos 1
-#define baseC 0
-#define hingeC 5
-
-#define fishPos 2
-#define baseF 0
-#define hingeF 5
-
-#define zipPos 3
-#define baseZ 5
-#define hingeZ 0
+// Distance constants 
+#define gateDist 1
+#define startRampDist 1.4
+#define endRampDist 6
+#define zipDist 1
 
 #endif
