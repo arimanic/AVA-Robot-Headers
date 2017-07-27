@@ -1,10 +1,15 @@
 
-#include <globConsts.h>
+#include "globConsts.h"
 #include "arrayHelpers.h"
 #include <Arduino.h>
+#include <LiquidCrystal.h>
 #include <math.h>
-#include <motor.h>
+#include "motor.h"
+#include "TinahIO.h"
+
+extern LiquidCrystal LCD;
 extern motorClass motor;
+extern int wheelTicks;
 
 bool QRDs[numQRD] = { 0 }; // High means on tape
 // P
@@ -18,6 +23,8 @@ double kp, ki, kd, controlGain;
 double speedScale;
 double flatSpeed;
 double rampSpeed;
+double ringSpeed;
+double slowSpeed = 0.2;
 // D
 double lastError, error, recentError;
 long prevDTime = 0;
@@ -71,6 +78,9 @@ void setFlatSpeed(double val) {
 void setRampSpeed(double val) {
 	rampSpeed = val;
 }
+void setRingSpeed(double val) {
+	ringSpeed = val;
+}
 
 double getKP() {
 	return kp;
@@ -92,6 +102,9 @@ double getFlatSpeed() {
 }
 double getRampSpeed() {
 	return rampSpeed;
+}
+double getRingSpeed() {
+	return ringSpeed;
 }
 
 void setMotors(double L, double R, double ctrl) {
@@ -242,7 +255,7 @@ bool getQRD(int QRDnum) {
 double getDist(int ticks) {
 	double rotations = ticks / 24.0;
 	double circumf = PI*wheelDiam;
-	return rotations * circumf;
+	return rotations * circumf * 2/3;
 }
 
 bool atCross() {
@@ -258,7 +271,7 @@ double PID4follow()
 	getQRDs();
 	double pCon = getP4();
 	double dCon = getD();
-	double con = controlGain * (pCon + dCon);
+	double con = controlGain * (pCon - dCon);
 	setMotors(255, 255, con);
 	return con;
 }
@@ -267,14 +280,82 @@ double PID2follow() {
 	getQRDs();
 	double pCon = getP2();
 	double dCon = getD();
-	double con = controlGain * (pCon + dCon);
+	double con = controlGain * (pCon - dCon);
 	setMotors(255, 255, con);
 	return con;
 }
 
 
 
- getLastTurn() {
+ bool getLastTurn() {
 	return lastTurn;
 }
 
+ void crossTurn() {
+	 int x;
+	 if (leftSide()) {
+		 x = getRingSpeed();
+	 }
+	 else {
+		 x = -getRingSpeed();
+	 }
+
+	 while (atCross()) {
+		 LCD.clear();
+		 printQRDs();
+		 motor.speed(RmotorPin, 255 * getRingSpeed());
+		 motor.speed(LmotorPin, 255 * getRingSpeed());
+	 }
+
+	 while (!QRDs[1] && !QRDs[2]) {
+		 LCD.clear();
+		 printQRDs();
+		 motor.speed(RmotorPin, 255 * x);
+		 motor.speed(LmotorPin, 255 * -x);
+	 }
+
+	 setMotors(0, 0, 0);
+}
+
+ void revStop() {
+	 int lastTicks = 0;
+
+	 while (lastTicks != wheelTicks) {
+		 lastTicks = wheelTicks;
+		 motor.speed(RmotorPin, -255);
+		 motor.speed(LmotorPin, -255);
+	 }
+
+	 motor.speed(RmotorPin, 0);
+	 motor.speed(LmotorPin, 0);
+
+ }
+
+ void stageSpeed(int stage) {
+	 switch (stage) {
+	 case beforeGateStage:
+		 speedScale = flatSpeed;
+		 break;
+
+	 case afterGateStage:
+		 speedScale = flatSpeed / 2;
+		 break;
+
+	 case onRampStage:
+		 speedScale = rampSpeed;
+		 break;
+
+	 case afterRampStage:
+		 speedScale = flatSpeed / 2;
+		 break;
+
+	 case ringStage:
+		 speedScale = ringSpeed;
+		 break;
+
+	 case slowStage:
+		 speedScale = slowSpeed;
+		 break;
+
+	 }
+ }

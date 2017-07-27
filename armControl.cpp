@@ -16,23 +16,23 @@
 //                        Fishing   (F)
 //                        Zipline   (Z)
 
-#define upperBaseBound 3.37
-#define lowerBaseBound 5.0
-#define upperHingeBound 5.0
-#define lowerHingeBound 2.79
+#define upperBaseBound 3.6
+#define lowerBaseBound 4.8
+#define upperHingeBound 3.4
+#define lowerHingeBound 1.7
 #define hingeCollision 3.10
 
 #define drivePos 0
-#define baseD lowerBaseBound
+#define baseD upperBaseBound
 #define hingeD lowerHingeBound
 
 #define collectPos 1
-#define baseC 4.3
-#define hingeC 3.5
+#define baseC 4.0
+#define hingeC 1.75
 
 #define fishPos 2
-#define baseF 3.5
-#define hingeF 3.2
+#define baseF 4.3
+#define hingeF 2.0
 
 #define zipPos 3
 #define baseZ upperBaseBound
@@ -42,11 +42,11 @@
 
 // define a threshold for measurement error. It is unlikely to read the pot when it is at the exact value defined above.
 // instead try to catch it when it is close;
-#define voltageRange 0.7
-
+#define voltageRange 0.1
+#define fineCorrRange 0.15
 // define a scaling factor for the movement speed of the arm. motor speed = armSpeed*displacement
 #define armSpeed 700 // > 0.07 , 4000 < 0.07
-#define fineCorrSpeed 4000
+#define fineCorrSpeed 3000
 
 extern motorClass motor;
 
@@ -118,10 +118,10 @@ bool atBothPos(int pos) {
 }
 
 void moveLowerArm(int pos) {
-	if (getRelLowerPos(pos) > voltageRange){
-		motor.speed(armBaseMotorPin, armSpeed * -getRelLowerPos(pos));
-	} else if (getRelLowerPos(pos) <= voltageRange) {
-		motor.speed(armBaseMotorPin, fineCorrSpeed * -getRelLowerPos(pos));
+	if (getRelLowerPos(pos) > fineCorrRange){
+		motor.speed(armBaseMotorPin, armSpeed * getRelLowerPos(pos));
+	} else if (getRelLowerPos(pos) <= fineCorrRange) {
+		motor.speed(armBaseMotorPin, fineCorrSpeed * getRelLowerPos(pos));
 	}
 	else {
 		motor.stop(armBaseMotorPin);
@@ -130,11 +130,11 @@ void moveLowerArm(int pos) {
 }
 
 void moveUpperArm(int pos) {
-	if (getRelUpperPos(pos) > voltageRange) {
-		motor.speed(armHingeMotorPin, armSpeed * -getRelUpperPos(pos));
+	if (getRelUpperPos(pos) > fineCorrRange) {
+		motor.speed(armHingeMotorPin, armSpeed * getRelUpperPos(pos));
 	}
-	else if (getRelUpperPos(pos) <= voltageRange) {
-		motor.speed(armHingeMotorPin, fineCorrSpeed * -getRelUpperPos(pos));
+	else if (getRelUpperPos(pos) <= fineCorrRange) {
+		motor.speed(armHingeMotorPin, fineCorrSpeed * getRelUpperPos(pos));
 	}
 	else {
 		motor.stop(armHingeMotorPin);

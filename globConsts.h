@@ -24,30 +24,37 @@
 #define QRD3pin 7
 
 // Analog IO Pins
-#define IR0pin A0
-#define IR1pin A1
-#define IR2pin A2
-#define IR3pin A3
-#define IR4pin A4
-
-#define armHingePotPin A5
-#define armBasePotPin A6
+#define IR0pin 0
+#define IR1pin 1
+#define IR2pin 2
+#define armHingePotPin 4
+#define armBasePotPin 5
 
 #define paramMax 50
 
 #define numQRD 4
 #define numIR 5
-#define numVars 9
+#define numVars 10
 #define numToys 6
-#define overflowsNeeded (61 + 9.0/255.0);
+
 
 #define PI 3.1415
 #define wheelDiam 0.072
 
+// Stages
+#define slowStage -1
+#define beforeGateStage 0
+#define afterGateStage 1
+#define onRampStage 2
+#define afterRampStage 3
+#define ringStage 4
+
 // Distance constants 
-#define gateDist 1
-#define startRampDist 1.4
-#define endRampDist 6
-#define zipDist 1
+#define beforeGateTicks 200
+#define afterGateTicks 100
+#define onRampTicks 200
+#define afterRampTicks 100
+#define zipTicks 300
+
 
 #endif

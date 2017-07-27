@@ -1,18 +1,18 @@
 #include <TinahIO.h>
-#include <sonar.h>
-#include <PID.h>
-#include <IR.h>
-#include <globConsts.h>
+#include "sonar.h"
+#include "PID.h"
+#include "IR.h"
+#include "globConsts.h"
 //#include <phys253.h>
 #include <Arduino.h>
-#include <arrayHelpers.h>
+#include "arrayHelpers.h"
 #include <LiquidCrystal.h>
 
 extern LiquidCrystal LCD;
 extern int startbutton();
 extern int stopbutton();
 
-String params[] = { "P", "I", "D", "G", "T", "FSpeed ",  "RSpeed ", "X", "S Thresh" };
+String params[] = { "P", "I", "D", "G", "T", "FlatSpeed ",  "RampSpeed ", "RingSpeed ", "X", "S Thresh" };
 double vars[numVars] = { 0 };
 
 void menu() {
@@ -28,6 +28,7 @@ void menu() {
 	vars[4] = getIRThresh();
 	vars[5] = getFlatSpeed();
 	vars[6] = getRampSpeed();
+	vars[7] = getRingSpeed();
 
 	LCD.clear();
 
@@ -49,14 +50,14 @@ void menu() {
 			if (params[param] == "T") {
 				var = analogRead(6);
 			}
-			else if (params[param] == "FSpeed " || params[param] == "RSpeed ") {
+			else if (params[param] == "FlatSpeed " || params[param] == "RingSpeed " || params[param] == "RampSpeed ") {
 				var = analogRead(6) / 1023.0;
 			}
 			else if (params[param] == "X") {
 				var = doubleMap(analogRead(6), 0, 1023, 0, 1);
 			}
 			else {
-				var = doubleMap(analogRead(6), 0, 1023, -10, paramMax);
+				var = doubleMap(analogRead(6), 0, 1023, 0, paramMax);
 			}
 
 			if (params[param] == "X") {
@@ -103,7 +104,8 @@ void menu() {
 			setIRThresh(vars[4]);
 			setFlatSpeed(vars[5]);
 			setRampSpeed(vars[6]);
-			setSonarThresh(vars[8]);
+			setRingSpeed(vars[7]);
+			setSonarThresh(vars[9]);
 			LCD.clear();
 			return;
 
@@ -154,15 +156,16 @@ void printParams() {
 	LCD.print(" "); */
 }
 
-void initConsts(double p, double i, double d, double g, double t, double f, double r, int x, double son) {
-	double arr[numVars] = { p, i, d, g, t, f, r, x, son };
+void initConsts(double p, double i, double d, double g, double t, double flat, double ramp, double ring,  int x, double son) {
+	double arr[numVars] = { p, i, d, g, t, flat, ramp, ring,  x, son };
 	setArray(vars, arr, numVars);
 	setKP(p);
 	setKI(i);
 	setKD(d);
 	setControlGain(g);
-	setFlatSpeed(f);
-	setRampSpeed(r);
+	setFlatSpeed(flat);
+	setRampSpeed(ramp);
+	setRingSpeed(ring);
 	setIRThresh(t);
 	setSonarThresh(son);
 }
@@ -170,4 +173,16 @@ void initConsts(double p, double i, double d, double g, double t, double f, doub
 
 double doubleMap(double x, double in_min, double in_max, double out_min, double out_max) {
 	return (double)(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+bool leftSide() {
+	return vars[numVars - 2];
+}
+
+void printQRDs() {
+	LCD.print(getQRD(0));
+	LCD.print(getQRD(1));
+	LCD.print(getQRD(2));
+	LCD.print(getQRD(3));
+	LCD.print(" ");
 }

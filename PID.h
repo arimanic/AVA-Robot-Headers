@@ -8,6 +8,7 @@ void setControlGain(double val);
 void setSpeedScale(double val);
 void setRampSpeed(double val);
 void setFlatSpeed(double val);
+void setRingSpeed(double val);
 
 double getKP();
 double getKI();
@@ -16,6 +17,7 @@ double getControlGain();
 double getSpeedScale();
 double getRampSpeed();
 double getFlatSpeed();
+double getRingSpeed();
 
 
 bool getLastTurn();
@@ -40,6 +42,10 @@ double PID4follow();
 double PID2follow();
 
 double getDist(int ticks);
+
+void crossTurn();
+void revStop();
+void stageSpeed(int stage);
 
 #endif
 
