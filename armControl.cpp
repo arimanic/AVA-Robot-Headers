@@ -38,8 +38,31 @@
 #define baseZ upperBaseBound
 #define hingeZ upperHingeBound
 
+/*
+#define collectPos 1
+#define baseC 4.0
+#define hingeC 1.75
 
+#define collectPos 1
+#define baseC 4.0
+#define hingeC 1.75
 
+#define collectPos 1
+#define baseC 4.0
+#define hingeC 1.75
+
+#define collectPos 1
+#define baseC 4.0
+#define hingeC 1.75
+
+#define collectPos 1
+#define baseC 4.0
+#define hingeC 1.75
+
+#define collectPos 1
+#define baseC 4.0
+#define hingeC 1.75
+*/
 // define a threshold for measurement error. It is unlikely to read the pot when it is at the exact value defined above.
 // instead try to catch it when it is close;
 #define voltageRange 0.1

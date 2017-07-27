@@ -38,14 +38,7 @@ void menu() {
 		if (printMenu > 400) {
 			printMenu = 0;
 
-			param = map(analogRead(7), 0, 1000, 0, numVars - 1);
-			if (param > numVars) {
-				param = numVars;
-			}
-
-			if (param < 0) {
-				param = 0;
-			}
+			param = gatedKnobMap(7, 0, numVars - 1);
 
 			if (params[param] == "T") {
 				var = analogRead(6);
@@ -83,7 +76,7 @@ void menu() {
 					LCD.print(digitalRead(QRD2pin));
 					LCD.setCursor(0, 1);
 					LCD.print(" Last = ");
-					LCD.print(getIRThresh());
+					LCD.print(vars[param]);
 				}
 				else {
 					LCD.setCursor(0, 1);
@@ -173,6 +166,17 @@ void initConsts(double p, double i, double d, double g, double t, double flat, d
 
 double doubleMap(double x, double in_min, double in_max, double out_min, double out_max) {
 	return (double)(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+int gatedKnobMap(int port, int outMin, int outMax) {
+	int out = map(analogRead(port), 50, 950, outMin, outMax);
+	if (out > outMax) {
+		out = outMax;
+	}
+	else if (out < outMin) {
+		out = outMin;
+	}
+
+	return out;
 }
 
 bool leftSide() {

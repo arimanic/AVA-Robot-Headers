@@ -28,7 +28,7 @@ bool gateStop() {
 void getIRs() {
 	// Reads all IR sensors and stores values in IRs array
 	for (int IRindex = 0; IRindex < numIR; IRindex++) {
-		IRs[IRindex] = analogRead(40 + IRindex);
+		IRs[IRindex] = analogRead(IRindex);
 	}
 }
 

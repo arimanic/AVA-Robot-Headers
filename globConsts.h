@@ -32,6 +32,7 @@
 
 #define paramMax 50
 
+#define numModes 5
 #define numQRD 4
 #define numIR 5
 #define numVars 10

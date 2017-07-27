@@ -329,7 +329,8 @@ double PID2follow() {
 	 motor.speed(RmotorPin, 0);
 	 motor.speed(LmotorPin, 0);
 
- }
+ } 
+ //uses while. may get stuck here
 
  void stageSpeed(int stage) {
 	 switch (stage) {
