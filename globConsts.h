@@ -57,5 +57,10 @@
 #define afterRampTicks 100
 #define zipTicks 300
 
-
+// Time constants for stages (milliseconds)
+#define beforeGateMillis 1000
+#define afterGateMillis 1000
+#define onRampMillis 2000
+#define afterRampMillis 1000
+#define zipMillis 3000
 #endif

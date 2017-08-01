@@ -1,16 +1,31 @@
 #include "timing.h"
 #include <Arduino.h>
 
-double startTime;
+long startTime;
+long stageTime;  // the time that the current stage started at
 
-void setStartTime(double val){
+void setStartTime(long val){
 	startTime = val;
 }
-
-double getStartTime() {
+long getStartTime() {
 	return startTime;
 }
-
 double seconds() {
-	return (millis() - startTime) / 1000;
+	return (double)(millis() - startTime) / 1000;
+}
+long milliseconds() {
+	return millis() - startTime;
+}
+
+void setStageTime(long val) {
+	stageTime = val;
+}
+long getStageTime() {
+	return stageTime;
+}
+double stageSeconds() {
+	return (double)(millis() - stageTime) / 1000;
+}
+long stageMilliseconds() {
+	return millis() - stageTime;
 }
