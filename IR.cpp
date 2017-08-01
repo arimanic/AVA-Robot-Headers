@@ -1,6 +1,6 @@
 #include <IR.h>
 #include <Arduino.h>
-#include <globConsts.h>
+#include "globConsts.h"
 double IRs[numIR] = { 0 };
 int irThresh;
 
@@ -26,10 +26,10 @@ bool gateStop() {
 }
 
 void getIRs() {
-	// Reads all IR sensors and stores values in IRs array
-	for (int IRindex = 0; IRindex < numIR; IRindex++) {
-		IRs[IRindex] = analogRead(IRindex);
-	}
+	// Reads all IR sensors and stores values in IRs array	
+		IRs[0] = analogRead(IR0pin);
+		IRs[1] = analogRead(IR1pin);
+		IRs[2] = analogRead(IR2pin);
 }
 
 int getIR(int IRNum) {

@@ -7,12 +7,14 @@
 #include <Arduino.h>
 #include "arrayHelpers.h"
 #include <LiquidCrystal.h>
+#include "armControl.h"
 
 extern LiquidCrystal LCD;
 extern int startbutton();
 extern int stopbutton();
+int side; // 0 if right side, 1 if left side
 
-String params[] = { "P", "I", "D", "G", "T", "FlatSpeed ",  "RampSpeed ", "RingSpeed ", "X", "S Thresh" };
+String params[] = { "P ", "I ", "D ", "G ", "IR ", "FlatSpeed ",  "RampSpeed ", "RingSpeed ", "Sml error ", "Med err ", "Lrg err ", "Huge err ", "Arm Spd ", "Fine Arm ", "Side " };
 double vars[numVars] = { 0 };
 
 void menu() {
@@ -29,6 +31,13 @@ void menu() {
 	vars[5] = getFlatSpeed();
 	vars[6] = getRampSpeed();
 	vars[7] = getRingSpeed();
+	vars[8] = getSmallErr();
+	vars[9] = getMedErr();
+	vars[10] = getLargeErr();
+	vars[11] = getHugeErr();
+	vars[12] = getArmSpeed();
+	vars[13] = getFineArmSpeed();
+	vars[14] = getSide();
 
 	LCD.clear();
 
@@ -40,28 +49,31 @@ void menu() {
 
 			param = gatedKnobMap(7, 0, numVars - 1);
 
-			if (params[param] == "T") {
+			if (params[param] == "IR ") {
 				var = analogRead(6);
 			}
 			else if (params[param] == "FlatSpeed " || params[param] == "RingSpeed " || params[param] == "RampSpeed ") {
 				var = analogRead(6) / 1023.0;
 			}
-			else if (params[param] == "X") {
+			else if (params[param] == "Side ") {
 				var = doubleMap(analogRead(6), 0, 1023, 0, 1);
+			}
+			else if (params[param] == "Arm Spd " || params[param] == "Fine Arm ") {
+				var = doubleMap(analogRead(6), 0, 1023, 0, 4000);
 			}
 			else {
 				var = doubleMap(analogRead(6), 0, 1023, 0, paramMax);
 			}
 
-			if (params[param] == "X") {
+			if (params[param] == "Side ") {
 				LCD.clear();
 				LCD.print("Select side");
 				LCD.setCursor(0, 1);
 				if (var == 1) {
-					LCD.print("R");
+					LCD.print("L");
 				}
 				else {
-					LCD.print("L");
+					LCD.print("R");
 				}
 
 			}
@@ -98,7 +110,13 @@ void menu() {
 			setFlatSpeed(vars[5]);
 			setRampSpeed(vars[6]);
 			setRingSpeed(vars[7]);
-			setSonarThresh(vars[9]);
+			setSmallErr(vars[8]);
+			setMedErr(vars[9]);
+			setLargeErr(vars[10]);
+			setHugeErr(vars[11]);
+			setArmSpeed(vars[12]);
+			setFineArmSpeed(vars[13]);
+			setSide(vars[14]);
 			LCD.clear();
 			return;
 
@@ -149,8 +167,8 @@ void printParams() {
 	LCD.print(" "); */
 }
 
-void initConsts(double p, double i, double d, double g, double t, double flat, double ramp, double ring,  int x, double son) {
-	double arr[numVars] = { p, i, d, g, t, flat, ramp, ring,  x, son };
+void initConsts(double p, double i, double d, double g, double t, double flat, double ramp, double ring, int smallErr, int medErr, int largeErr, int hugeErr, double armSpeed, double fineArmSpeed, int side) {
+	double arr[numVars] = { p, i, d, g, t, flat, ramp, ring, smallErr, medErr, largeErr, hugeErr, armSpeed, fineArmSpeed, side };
 	setArray(vars, arr, numVars);
 	setKP(p);
 	setKI(i);
@@ -160,12 +178,29 @@ void initConsts(double p, double i, double d, double g, double t, double flat, d
 	setRampSpeed(ramp);
 	setRingSpeed(ring);
 	setIRThresh(t);
-	setSonarThresh(son);
+	setSmallErr(smallErr);
+	setMedErr(medErr);
+	setLargeErr(largeErr);
+	setHugeErr(hugeErr);
+	setArmSpeed(armSpeed);
+	setFineArmSpeed(fineArmSpeed);
 }
 
 
 double doubleMap(double x, double in_min, double in_max, double out_min, double out_max) {
 	return (double)(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+double gatedKnobMap(int port, double outMin, double outMax) {
+	double out = doubleMap(analogRead(port), 50, 950, outMin, outMax);
+	if (out > outMax) {
+		out = outMax;
+	}
+	else if (out < outMin) {
+		out = outMin;
+	}
+
+	return out;
 }
 int gatedKnobMap(int port, int outMin, int outMax) {
 	int out = map(analogRead(port), 50, 950, outMin, outMax);
@@ -179,8 +214,16 @@ int gatedKnobMap(int port, int outMin, int outMax) {
 	return out;
 }
 
+void setSide(int val) {
+	side = val;
+}
+
+int getSide() {
+	return side;
+}
+
 bool leftSide() {
-	return vars[numVars - 2];
+	return side;
 }
 
 void printQRDs() {

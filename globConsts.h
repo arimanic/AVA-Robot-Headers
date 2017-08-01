@@ -25,17 +25,17 @@
 
 // Analog IO Pins
 #define IR0pin 0
-#define IR1pin 1
+#define IR1pin 1 // should be 1 but ir 1 is not reading properly. 
 #define IR2pin 2
 #define armHingePotPin 4
 #define armBasePotPin 5
 
 #define paramMax 50
 
-#define numModes 5
+#define numModes 6
 #define numQRD 4
 #define numIR 5
-#define numVars 10
+#define numVars 15
 #define numToys 6
 
 

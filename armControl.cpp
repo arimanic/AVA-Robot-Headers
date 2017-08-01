@@ -2,6 +2,7 @@
 #include "globConsts.h"
 #include "ServoTINAH.h"
 #include "motor.h"
+#include "armControl.h"
 
 // Arm movement is controlled by these functions.
 // Movement is split into upper arm, lower arm, and base servo
@@ -16,60 +17,10 @@
 //                        Fishing   (F)
 //                        Zipline   (Z)
 
-#define upperBaseBound 3.6
-#define lowerBaseBound 4.8
-#define upperHingeBound 3.4
-#define lowerHingeBound 1.7
-#define hingeCollision 3.10
 
-#define drivePos 0
-#define baseD upperBaseBound
-#define hingeD lowerHingeBound
 
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define fishPos 2
-#define baseF 4.3
-#define hingeF 2.0
-
-#define zipPos 3
-#define baseZ upperBaseBound
-#define hingeZ upperHingeBound
-
-/*
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-*/
-// define a threshold for measurement error. It is unlikely to read the pot when it is at the exact value defined above.
-// instead try to catch it when it is close;
-#define voltageRange 0.1
-#define fineCorrRange 0.15
-// define a scaling factor for the movement speed of the arm. motor speed = armSpeed*displacement
-#define armSpeed 700 // > 0.07 , 4000 < 0.07
-#define fineCorrSpeed 3000
+int armSpeed = 500; // > 0.07 , 4000 < 0.07
+int fineCorrSpeed = 700;
 
 extern motorClass motor;
 
@@ -78,18 +29,32 @@ extern ServoTINAH RCServo1;
 extern ServoTINAH RCServo2;
 
 
+void setArmSpeed(int speed) {
+	armSpeed = speed;
+}
+void setFineArmSpeed(int speed) {
+	fineCorrSpeed = speed;
+}
+
+int getArmSpeed() {
+	return armSpeed;
+}
+int getFineArmSpeed() {
+	return fineCorrSpeed;
+}
 double getBaseMotorPot() {
 	//Read the analog voltage value of the Potentiometer at the base of the arm
 	// 0 - 5
 	return analogRead(armBasePotPin)*5.0 / 1024.0;
 }
-
 double getHingeMotorPot() {
 	//Read the analog voltage value of the Potentiometer at the hinge of the arm
 	// 0 -5
 	return analogRead(armHingePotPin)*5.0 / 1024.0;
 }
-
+double getRelLowerPos(double voltage) {
+	return getBaseMotorPot() - voltage;
+}
 double getRelLowerPos(int pos) {
 	// Determines if the lower portion of the arm is at the position passed as pos
 	// returns a negative number if the position is low. Positive number if high. 0 if at the right spot
@@ -106,7 +71,9 @@ double getRelLowerPos(int pos) {
 		return voltRead - baseZ;
 	}
 }
-
+double getRelUpperPos(double voltage) {
+	return getHingeMotorPot() - voltage;
+}
 double getRelUpperPos(int pos) {
 	// Determines if the upper portion of the arm is at the position passed as pos
 	// returns a negative number if the position is low. Positive number if high. 0 if at the right spot
@@ -128,13 +95,11 @@ bool atLowerPos(int pos) {
 	double relLower = getRelLowerPos(pos);
 	return abs(relLower) <= voltageRange;
 }
-
 bool atUpperPos(int pos) {
 	//Determine if the upper portion of the arm are in the position passed
 	double relUpper = getRelUpperPos(pos);
 	return abs(relUpper) <= voltageRange;
 }
-
 bool atBothPos(int pos) {
 	// Determines if the upper and lower portions of the arm are at the position passed as pos within the error range defined as voltageRange
 	return atUpperPos(pos) && atLowerPos(pos);
@@ -151,7 +116,18 @@ void moveLowerArm(int pos) {
 	}
 	return;
 }
-
+void moveLowerArm(double voltage) {
+	if (getRelLowerPos(voltage) > fineCorrRange) {
+		motor.speed(armBaseMotorPin, armSpeed * getRelLowerPos(voltage));
+	}
+	else if (getRelLowerPos(voltage) <= fineCorrRange) {
+		motor.speed(armBaseMotorPin, fineCorrSpeed * getRelLowerPos(voltage));
+	}
+	else {
+		motor.stop(armBaseMotorPin);
+	}
+	return;
+}
 void moveUpperArm(int pos) {
 	if (getRelUpperPos(pos) > fineCorrRange) {
 		motor.speed(armHingeMotorPin, armSpeed * getRelUpperPos(pos));
@@ -164,7 +140,18 @@ void moveUpperArm(int pos) {
 	}
 	return;
 }
-
+void moveUpperArm(double voltage) {
+	if (getRelUpperPos(voltage) > fineCorrRange) {
+		motor.speed(armHingeMotorPin, armSpeed * getRelUpperPos(voltage));
+	}
+	else if (getRelUpperPos(voltage) <= fineCorrRange) {
+		motor.speed(armHingeMotorPin, fineCorrSpeed * getRelUpperPos(voltage));
+	}
+	else {
+		motor.stop(armHingeMotorPin);
+	}
+	return;
+}
 void moveBaseServo(int val) {
 	// Moves the base servo to the desired position. 90 is pointed forward
 	if (val > 179) {

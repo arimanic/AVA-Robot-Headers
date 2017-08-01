@@ -1,6 +1,10 @@
 #ifndef PID_h
 #define PID_h
 
+void setSmallErr(int err);
+void setMedErr(int err);
+void setLargeErr(int err);
+void setHugeErr(int err);
 void setKP(double val);
 void setKI(double val);
 void setKD(double val);
@@ -10,6 +14,10 @@ void setRampSpeed(double val);
 void setFlatSpeed(double val);
 void setRingSpeed(double val);
 
+int getSmallErr();
+int getMedErr();
+int getLargeErr();
+int getHugeErr();
 double getKP();
 double getKI();
 double getKD();
@@ -23,10 +31,6 @@ double getRingSpeed();
 bool getLastTurn();
 
 void setMotors(double L, double R, double ctrl);
-
-void setSmallErr(double err);
-void setMedErr(double err);
-void setLargeErr(double err);
 
 void getQRDs();
 bool getQRD(int QRDnum);

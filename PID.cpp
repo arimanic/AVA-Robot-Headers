@@ -13,10 +13,10 @@ extern int wheelTicks;
 
 bool QRDs[numQRD] = { 0 }; // High means on tape
 // P
-double smallErr = 4;
-double medErr = 8;
-double largeErr = 16;
-double hugeErr = 24;
+double smallErr;
+double medErr;
+double largeErr;
+double hugeErr;
 
 int lastTurn;
 double kp, ki, kd, controlGain;
@@ -50,8 +50,20 @@ int cross = 9; //{ 1, 0, 0, 1 }; // middle two entries do not matter
 #define hardTurn2  0 //{ 0, 0 };
 bool QRDs2[2] = { 0 };
 
-// 
+// Setters and Getters //
 
+void setSmallErr(int err) {
+	smallErr = err;
+}
+void setMedErr(int err) {
+	medErr = err;
+}
+void setLargeErr(int err) {
+	largeErr = err;
+}
+void setHugeErr(int err) {
+	hugeErr = err;
+}
 void setKP(double val) {
 	kp = val;
 	return;
@@ -82,6 +94,19 @@ void setRingSpeed(double val) {
 	ringSpeed = val;
 }
 
+
+int getSmallErr() {
+	return smallErr;
+}
+int getMedErr() {
+	return medErr;
+}
+int getLargeErr() {
+	return largeErr;
+}
+int getHugeErr() {
+	return hugeErr;
+}
 double getKP() {
 	return kp;
 }
@@ -225,19 +250,6 @@ double getD() {
 	return 0;
 }
 
-void setSmallErr(double err) {
-	smallErr = err;
-	return;
-}
-void setMedErr(double err) {
-	medErr = err;
-	return;
-}
-void setLargeErr(double err) {
-	largeErr = err;
-	return;
-}
-
 void getQRDs() {
 	// Reads all QRD sensors and stores boolean values in QRDs array
 	QRDs[0] = digitalRead(QRD0pin);
@@ -257,6 +269,13 @@ double getDist(int ticks) {
 	double circumf = PI*wheelDiam;
 	return rotations * circumf * 2/3;
 }
+
+bool getLastTurn() {
+	return lastTurn;
+}
+
+
+// Control Functions //
 
 bool atCross() {
 	getQRDs();
@@ -287,9 +306,7 @@ double PID2follow() {
 
 
 
- bool getLastTurn() {
-	return lastTurn;
-}
+
 
  void crossTurn() {
 	 int x;
