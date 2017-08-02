@@ -61,12 +61,21 @@ double getRelLowerPos(int pos) {
 	double voltRead = getBaseMotorPot();
 
 	switch (pos) {
+	case toyZero:
+		return voltRead - baseZero;
+	case toyOne:
+		return voltRead - baseOne;
+	case toyTwo:
+		return voltRead - baseTwo;	
+	case toyThree:
+		return voltRead - baseThree;
+	case toyFour:
+		return voltRead - baseFour;
+	case toyFive:
+		return voltRead - baseFive;
+
 	case drivePos:
 		return voltRead - baseD;
-	case collectPos:
-		return voltRead - baseC;
-	case fishPos:
-		return voltRead - baseF;
 	case zipPos:
 		return voltRead - baseZ;
 	}
@@ -79,14 +88,25 @@ double getRelUpperPos(int pos) {
 	// returns a negative number if the position is low. Positive number if high. 0 if at the right spot
 	double voltRead = getHingeMotorPot();
 	switch (pos) {
-	case drivePos:
-		return voltRead - hingeD;
-	case collectPos:
-		return voltRead - hingeC;
-	case fishPos:
-		return voltRead - hingeF;
-	case zipPos:
-		return voltRead - hingeZ;
+		switch (pos) {
+		case toyZero:
+			return voltRead - hingeZero;
+		case toyOne:
+			return voltRead - hingeOne;
+		case toyTwo:
+			return voltRead - hingeTwo;
+		case toyThree:
+			return voltRead - hingeThree;
+		case toyFour:
+			return voltRead - hingeFour;
+		case toyFive:
+			return voltRead - hingeFive;
+
+		case drivePos:
+			return voltRead - hingeD;
+		case zipPos:
+			return voltRead - hingeZ;
+		}
 	}
 }
 
@@ -163,4 +183,48 @@ void moveBaseServo(int val) {
 
 	RCServo0.write(val);
 	return;
+}
+void moveBaseServoPos(int pos) {
+	switch (pos) {
+		switch (pos) {
+		case toyZero:
+			RCServo0.write(servoZero);
+			break;
+		case toyOne:
+			RCServo0.write(servoOne);
+			break;
+		case toyTwo:
+			RCServo0.write(servoTwo);
+			break;
+		case toyThree:
+			RCServo0.write(servoThree);
+			break;
+		case toyFour:
+			RCServo0.write(servoFour);
+			break;
+		case toyFive:
+			RCServo0.write(servoFive);
+			break;
+
+		case drivePos:
+			RCServo0.write(servoD);
+			break;
+		case zipPos:
+			RCServo0.write(servoZ);
+			break;
+		}
+	}
+}
+void activateArmServo() {
+	RCServo2.write(90);
+
+}
+void resetArmServo() {
+	RCServo2.write(0);
+}
+
+void moveArm(int pos) {
+	moveLowerArm(pos);
+	moveUpperArm(pos);
+	moveBaseServoPos(pos);
 }

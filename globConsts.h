@@ -32,7 +32,7 @@
 
 #define paramMax 50
 
-#define numModes 6
+#define numModes 7
 #define numQRD 4
 #define numIR 5
 #define numVars 15
@@ -58,8 +58,8 @@
 #define zipTicks 300
 
 // Time constants for stages (milliseconds)
-#define beforeGateMillis 1000
-#define afterGateMillis 1000
+#define beforeGateMillis 1300
+#define afterGateMillis 1800
 #define onRampMillis 2000
 #define afterRampMillis 1000
 #define zipMillis 3000

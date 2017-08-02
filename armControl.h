@@ -7,47 +7,47 @@
 #define lowerHingeBound 1.7
 #define hingeCollision 3.10
 
-#define drivePos 0
+#define toyZero 0
+#define baseZero 4.5
+#define hingeZero 2.0
+#define servoZero 90
+
+#define toyOne 1
+#define baseOne 4.5
+#define hingeOne 2.0
+#define servoOne 90
+
+#define toyTwo 2
+#define baseTwo 4.5
+#define hingeTwo 2.0
+#define servoTwo 90
+
+#define toyThree 3
+#define baseThree 4.5
+#define hingeThree 2.0
+#define servoThree 90
+
+#define toyFour 4
+#define baseFour 4.5
+#define hingeFour 2.0
+#define servoFour 90
+
+#define toyFive 5
+#define baseFive 4.5
+#define hingeFive 2.0
+#define servoFive 90
+
+#define drivePos 6
 #define baseD upperBaseBound
 #define hingeD lowerHingeBound
+#define servoD 90
 
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define fishPos 2
-#define baseF 4.3
-#define hingeF 2.0
-
-#define zipPos 3
+#define zipPos 7
 #define baseZ upperBaseBound
 #define hingeZ upperHingeBound
+#define servoZ 90
 
-/*
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
 
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-
-#define collectPos 1
-#define baseC 4.0
-#define hingeC 1.75
-*/
 // define a threshold for measurement error. It is unlikely to read the pot when it is at the exact value defined above.
 // instead try to catch it when it is close;
 #define voltageRange 0.1
@@ -76,6 +76,10 @@ void moveUpperArm(int pos);
 void moveLowerArm(double voltage);
 void moveUpperArm(double voltage);
 void moveBaseServo(int val);
+void moveBaseServoPos(int pos);
+void activateArmServo();
+void resetArmServo();
 
+void moveArm(int pos);
 
 #endif // armControl_h
