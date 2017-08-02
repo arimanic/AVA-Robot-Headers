@@ -244,10 +244,10 @@ double getD() {
 	curDTime++;
 	lastError = error;
 
-	if (abs(error) < abs(recentError)) {
+	//if (abs(error) < abs(recentError)) {
 		return ((double)kd * (error - recentError)) / ((long double)(prevDTime + curDTime));
-	}
-	return 0;
+//	}
+//	return 0;
 }
 
 void getQRDs() {
@@ -269,12 +269,9 @@ double getDist(int ticks) {
 	double circumf = PI*wheelDiam;
 	return rotations * circumf * 2/3;
 }
-
 bool getLastTurn() {
 	return lastTurn;
 }
-
-
 // Control Functions //
 
 bool atCross() {
@@ -294,7 +291,6 @@ double PID4follow()
 	setMotors(255, 255, con);
 	return con;
 }
-
 double PID2follow() {
 	getQRDs();
 	double pCon = getP2();
@@ -303,10 +299,6 @@ double PID2follow() {
 	setMotors(255, 255, con);
 	return con;
 }
-
-
-
-
 
  void crossTurn() {
 	 int x;
