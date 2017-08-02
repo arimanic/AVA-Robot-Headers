@@ -130,7 +130,6 @@ void menu() {
 		}
 	}
 }
-
 void printParams() {
 	// Print all parameters to screen
 	//!!! change these to get functions.
@@ -166,10 +165,15 @@ void printParams() {
 	LCD.print(getSpeedScale());
 	LCD.print(" "); */
 }
+void printQRDs() {
+	LCD.print(getQRD(0));
+	LCD.print(getQRD(1));
+	LCD.print(getQRD(2));
+	LCD.print(getQRD(3));
+	LCD.print(" ");
+}
 
-void initConsts(double p, double i, double d, double g, double t, double flat, double ramp, double ring, int smallErr, int medErr, int largeErr, int hugeErr, double armSpeed, double fineArmSpeed, int side) {
-	double arr[numVars] = { p, i, d, g, t, flat, ramp, ring, smallErr, medErr, largeErr, hugeErr, armSpeed, fineArmSpeed, side };
-	setArray(vars, arr, numVars);
+void initConsts(double p, double i, double d, double g, double IR, double flat, double ramp, double ring, int smallErr, int medErr, int largeErr, int hugeErr, double armSpeed, double fineArmSpeed, int side) {
 	setKP(p);
 	setKI(i);
 	setKD(d);
@@ -177,7 +181,7 @@ void initConsts(double p, double i, double d, double g, double t, double flat, d
 	setFlatSpeed(flat);
 	setRampSpeed(ramp);
 	setRingSpeed(ring);
-	setIRThresh(t);
+	setIRThresh(IR);
 	setSmallErr(smallErr);
 	setMedErr(medErr);
 	setLargeErr(largeErr);
@@ -185,12 +189,31 @@ void initConsts(double p, double i, double d, double g, double t, double flat, d
 	setArmSpeed(armSpeed);
 	setFineArmSpeed(fineArmSpeed);
 }
-
+void setPIDG(double p, double i, double d, double g) {
+	setKP(p);
+	setKI(i);
+	setKD(d);
+	setControlGain(g);
+}
+void setSpeeds(double flat, double ramp, double ring) {
+	setFlatSpeed(flat);
+	setRampSpeed(ramp);
+	setRingSpeed(ring);
+}
+void setErrors(int smallErr, int medErr, int largeErr, int hugeErr) {
+	setSmallErr(smallErr);
+	setMedErr(medErr);
+	setLargeErr(largeErr);
+	setHugeErr(hugeErr);
+}
+void setArmSpeeds(double armSpeed, double fineArmSpeed) {
+	setArmSpeed(armSpeed);
+	setFineArmSpeed(fineArmSpeed);
+}
 
 double doubleMap(double x, double in_min, double in_max, double out_min, double out_max) {
 	return (double)(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
 double gatedKnobMap(int port, double outMin, double outMax) {
 	double out = doubleMap(analogRead(port), 50, 950, outMin, outMax);
 	if (out > outMax) {
@@ -217,19 +240,9 @@ int gatedKnobMap(int port, int outMin, int outMax) {
 void setSide(int val) {
 	side = val;
 }
-
 int getSide() {
 	return side;
 }
-
 bool leftSide() {
 	return side;
-}
-
-void printQRDs() {
-	LCD.print(getQRD(0));
-	LCD.print(getQRD(1));
-	LCD.print(getQRD(2));
-	LCD.print(getQRD(3));
-	LCD.print(" ");
 }
