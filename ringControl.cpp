@@ -3,6 +3,8 @@
 #include "PID.h"
 #include "arrayHelpers.h"
 #include <LiquidCrystal.h>
+#include "TinahIO.h"
+#include <Arduino.h>
 
 extern LiquidCrystal LCD;
 int crossPos;
@@ -16,6 +18,7 @@ bool toys75[6] = { 1, 1, 1, 1, 0, 0 };
 bool toys70[6] = { 1, 1, 1, 0, 0, 0 };
 bool toys65[6] = { 1, 1, 0, 0, 0, 0 };
 bool toys60[6] = { 1, 0, 0, 0, 0, 0 };
+bool toys0[6] = { 0 };
 
 int findCross(int crossNum) {
 	int dist;
@@ -34,19 +37,18 @@ void setCrossPos(int newPos) {
 }
 
 bool moveToPos(int targetPos) {
-	if (targetPos > 5) {
-		LCD.clear();
-		LCD.print("Invalid pos");
-		return false;
-	}
+	Serial.print(getQRD(0));
+	Serial.print(getQRD(1));
+	Serial.print(getQRD(2));
+	Serial.println(getQRD(3));
 
 	if (crossPos != targetPos) {
+		// PID follow with 4 qrds. count the number of crosses you encounter
 		if (atCross() && !onCross) {
 			onCross = true;
 			if (crossPos >= numToys - 1) {
 				crossPos = 0;
-			}
-			else {
+			} else {
 				crossPos++;
 			}
 		}
@@ -54,10 +56,13 @@ bool moveToPos(int targetPos) {
 			onCross = false;
 		}
 
-		PID2follow();
+		PID4follow();
 		return false;
-	}
-	else {
+	} else {
+		LCD.clear(); //!!!!!!!!
+		printQRDs();
+		extern bool QRDs[];
+		LCD.print(arr2bin4(QRDs));
 		revStop();
 		return true;
 	}
@@ -84,6 +89,9 @@ void toysInWater(double curTime) {
 	}
 	else if (curTime > 60) {
 		setArray(toyFallen, toys60, numToys);
+	}
+	else if (curTime < 60) {
+		setArray(toyFallen, toys0, numToys);
 	}
 }
 

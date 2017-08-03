@@ -14,6 +14,8 @@ void setArmSpeeds(double armSpeed, double fineArmSpeed);
 double doubleMap(double x, double in_min, double in_max, double out_min, double out_max);
 double gatedKnobMap(int port, double outMin, double outMax);
 int gatedKnobMap(int port, int outMin, int outMax);
+double knobToVolt(int knob);
+double constrainNum(double val, double min, double max);
 
 void setSide(int val);
 bool leftSide();

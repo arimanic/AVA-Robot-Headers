@@ -10,6 +10,7 @@
 extern LiquidCrystal LCD;
 extern motorClass motor;
 extern int wheelTicks;
+bool stopFlag;
 
 bool QRDs[numQRD] = { 0 }; // High means on tape
 // P
@@ -93,7 +94,9 @@ void setRampSpeed(double val) {
 void setRingSpeed(double val) {
 	ringSpeed = val;
 }
-
+void setStopFlag(bool val) {
+	stopFlag = val;
+}
 
 int getSmallErr() {
 	return smallErr;
@@ -276,14 +279,31 @@ bool getLastTurn() {
 
 bool atCross() {
 	getQRDs();
-	if (QRDs[0] && QRDs[3]) {
-		return true;
+	int binary = arr2bin4(QRDs);
+	switch(binary){
+	case 7: // 0111
+		break;
+	case 9: // 1001
+		break;
+	case 11: // 1011
+		break;
+	case 13: // 1101
+		break;
+	case 14: // 1110
+		break;
+	case 15: // 1111
+		break;
+	default:
+		return false;
+		
 	}
-	return false;
+
+	return true;
 }
 
 double PID4follow()
 {
+	stopFlag = 0;
 	getQRDs();
 	double pCon = getP4();
 	double dCon = getD();
@@ -292,6 +312,7 @@ double PID4follow()
 	return con;
 }
 double PID2follow() {
+	stopFlag = 0;
 	getQRDs();
 	double pCon = getP2();
 	double dCon = getD();
@@ -317,6 +338,7 @@ double PID2follow() {
 	 }
 
 	 while (!QRDs[1] && !QRDs[2]) {
+		 getQRDs();
 		 LCD.clear();
 		 printQRDs();
 		 motor.speed(RmotorPin, 255 * x);
@@ -325,22 +347,43 @@ double PID2follow() {
 
 	 setMotors(0, 0, 0);
 }
+ void stepMotors(long time) {
+	 long startStep = millis();
+	 while (millis() - startStep < time) {
+		 PID4follow();
+	 }
 
+	 setMotors(0, 0, 0);
+ }
+ 
  void revStop() {
-	 int lastTicks = 0;
-
-	 while (lastTicks != wheelTicks) {
-		 lastTicks = wheelTicks;
+	 long startingTime = millis();
+	 while (millis() - startingTime < 5 && !stopFlag) {
 		 motor.speed(RmotorPin, -255);
 		 motor.speed(LmotorPin, -255);
 	 }
-
+	 stopFlag = 1;
 	 motor.speed(RmotorPin, 0);
 	 motor.speed(LmotorPin, 0);
 
  } 
  //uses while. may get stuck here
+ void turnAround() {
+	 if (leftSide()) {
+		 setMotors(-255, 255, 0);
+	 }
+	 else {
+		 setMotors(255, -255, 0);
+	 }
 
+	 delay(500);
+
+	 while (getQRD(1) || getQRD(2)) {
+		 getQRDs();
+	 }
+
+	 revStop();
+ }
  void stageSpeed(int stage) {
 	 switch (stage) {
 	 case beforeGateStage:

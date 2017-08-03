@@ -13,6 +13,7 @@ void setSpeedScale(double val);
 void setRampSpeed(double val);
 void setFlatSpeed(double val);
 void setRingSpeed(double val);
+void setStopFlag(bool val);
 
 int getSmallErr();
 int getMedErr();
@@ -39,16 +40,16 @@ bool atCross();
 
 double getP4();
 double getP2();
-
 double getD();
 
 double PID4follow();
 double PID2follow();
-
+void stepMotors(long time);
 double getDist(int ticks);
 
 void crossTurn();
 void revStop();
+void turnAround();
 void stageSpeed(int stage);
 
 #endif

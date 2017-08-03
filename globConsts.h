@@ -59,7 +59,7 @@
 
 // Time constants for stages (milliseconds)
 #define beforeGateMillis 1300
-#define afterGateMillis 2150
+#define afterGateMillis 1700
 #define onRampMillis 2000
 #define afterRampMillis 1000
 #define zipMillis 3000
