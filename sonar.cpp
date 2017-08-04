@@ -28,10 +28,10 @@ void sonar() {
 
 void outPulse() {
 
-	offTime = seconds();
-	digitalWrite(trigPin, LOW);
-	digitalWrite(trigPin, HIGH);
-	digitalWrite(trigPin, LOW);
+	//offTime = seconds();
+//	digitalWrite(trigPin, LOW);
+	//digitalWrite(trigPin, HIGH);
+	//digitalWrite(trigPin, LOW);
 
 }
 

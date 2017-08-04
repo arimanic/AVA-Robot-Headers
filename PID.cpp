@@ -283,12 +283,12 @@ bool atCross() {
 	switch(binary){
 	case 7: // 0111
 		break;
-	case 9: // 1001
+	/*case 9: // 1001
 		break;
 	case 11: // 1011
 		break;
 	case 13: // 1101
-		break;
+		break;*/
 	case 14: // 1110
 		break;
 	case 15: // 1111
@@ -321,32 +321,6 @@ double PID2follow() {
 	return con;
 }
 
- void crossTurn() {
-	 int x;
-	 if (leftSide()) {
-		 x = getRingSpeed();
-	 }
-	 else {
-		 x = -getRingSpeed();
-	 }
-
-	 while (atCross()) {
-		 LCD.clear();
-		 printQRDs();
-		 motor.speed(RmotorPin, 255 * getRingSpeed());
-		 motor.speed(LmotorPin, 255 * getRingSpeed());
-	 }
-
-	 while (!QRDs[1] && !QRDs[2]) {
-		 getQRDs();
-		 LCD.clear();
-		 printQRDs();
-		 motor.speed(RmotorPin, 255 * x);
-		 motor.speed(LmotorPin, 255 * -x);
-	 }
-
-	 setMotors(0, 0, 0);
-}
  void stepMotors(long time) {
 	 long startStep = millis();
 	 while (millis() - startStep < time) {
@@ -355,6 +329,39 @@ double PID2follow() {
 
 	 setMotors(0, 0, 0);
  }
+
+ void crossTurn() {
+	 // Step forward until both middle QRDs are 0 (off tape)
+	 while (QRDs[1] || QRDs[2]) {
+		 Serial.print(1);
+		 LCD.clear();
+		 printQRDs();
+		 getQRDs();
+		 stepMotors(50);
+	 }
+	 // Turn until at least one middle QRD finds tape
+	 if (leftSide()){
+		 while (!(QRDs[1] || QRDs[2])) {
+			 Serial.print(2);
+			 getQRDs();
+			 LCD.clear();
+			 printQRDs();
+			 setMotors(-255, 0, 0);
+		 }
+	 }
+	 else {
+		 while (!(QRDs[1] || QRDs[2])) {
+			 Serial.print(2);
+			 getQRDs();
+			 LCD.clear();
+			 printQRDs();
+			 setMotors(0, -255, 0);
+		 }
+	 }
+	 Serial.print(3);
+	 setMotors(0, 0, 0);
+}
+
  
  void revStop() {
 	 long startingTime = millis();
@@ -368,21 +375,14 @@ double PID2follow() {
 
  } 
  //uses while. may get stuck here
- void turnAround() {
-	 if (leftSide()) {
-		 setMotors(-255, 255, 0);
-	 }
-	 else {
+ void turnAround(long turnTime) {
+	 long turnStart = millis();
+
+	 while (millis() - turnStart < turnTime) {
 		 setMotors(255, -255, 0);
 	 }
 
-	 delay(500);
-
-	 while (getQRD(1) || getQRD(2)) {
-		 getQRDs();
-	 }
-
-	 revStop();
+	 setMotors(0, 0, 0);
  }
  void stageSpeed(int stage) {
 	 switch (stage) {

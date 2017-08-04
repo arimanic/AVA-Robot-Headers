@@ -19,8 +19,8 @@
 
 
 
-int armSpeed = 500; // > 0.07 , 4000 < 0.07
-int fineCorrSpeed = 700;
+int armSpeed = 800; // > 0.07 , 4000 < 0.07
+int fineCorrSpeed = 15000;
 
 extern motorClass motor;
 
@@ -73,11 +73,14 @@ double getRelLowerPos(int pos) {
 		return voltRead - baseFour;
 	case toyFive:
 		return voltRead - baseFive;
-
 	case drivePos:
 		return voltRead - baseD;
 	case zipPos:
 		return voltRead - baseZ;
+	case irPos:
+		return voltRead - baseIR;
+	case gatePos:
+		return voltRead - baseGate;
 	}
 }
 double getRelUpperPos(double voltage) {
@@ -88,7 +91,6 @@ double getRelUpperPos(int pos) {
 	// returns a negative number if the position is low. Positive number if high. 0 if at the right spot
 	double voltRead = getHingeMotorPot();
 	switch (pos) {
-		switch (pos) {
 		case toyZero:
 			return voltRead - hingeZero;
 		case toyOne:
@@ -106,7 +108,11 @@ double getRelUpperPos(int pos) {
 			return voltRead - hingeD;
 		case zipPos:
 			return voltRead - hingeZ;
-		}
+		case irPos:
+			return voltRead - hingeIR;
+		case gatePos:
+			return voltRead - hingeGate;
+		
 	}
 }
 
@@ -126,10 +132,10 @@ bool atBothPos(int pos) {
 }
 
 void moveLowerArm(int pos) {
-	if (getRelLowerPos(pos) > fineCorrRange){
-		motor.speed(armBaseMotorPin, armSpeed * getRelLowerPos(pos));
-	} else if (getRelLowerPos(pos) <= fineCorrRange) {
-		motor.speed(armBaseMotorPin, fineCorrSpeed * getRelLowerPos(pos));
+	if (abs(getRelLowerPos(pos)) > fineCorrRange){
+		motor.speed(armBaseMotorPin, -armSpeed * getRelLowerPos(pos));
+	} else if (abs(getRelLowerPos(pos)) <= fineCorrRange) {
+		motor.speed(armBaseMotorPin, -fineCorrSpeed * getRelLowerPos(pos));
 	}
 	else {
 		motor.stop(armBaseMotorPin);
@@ -137,11 +143,11 @@ void moveLowerArm(int pos) {
 	return;
 }
 void moveLowerArm(double voltage) {
-	if (getRelLowerPos(voltage) > fineCorrRange) {
-		motor.speed(armBaseMotorPin, armSpeed * getRelLowerPos(voltage));
+	if (abs(getRelLowerPos(voltage)) > fineCorrRange) {
+		motor.speed(armBaseMotorPin, -armSpeed * getRelLowerPos(voltage));
 	}
-	else if (getRelLowerPos(voltage) <= fineCorrRange) {
-		motor.speed(armBaseMotorPin, fineCorrSpeed * getRelLowerPos(voltage));
+	else if (abs(getRelLowerPos(voltage)) <= fineCorrRange) {
+		motor.speed(armBaseMotorPin,- fineCorrSpeed * getRelLowerPos(voltage));
 	}
 	else {
 		motor.stop(armBaseMotorPin);
@@ -149,23 +155,27 @@ void moveLowerArm(double voltage) {
 	return;
 }
 void moveUpperArm(int pos) {
-	if (getRelUpperPos(pos) > fineCorrRange) {
-		motor.speed(armHingeMotorPin, armSpeed * getRelUpperPos(pos));
+	
+	if (abs(getRelUpperPos(pos)) > fineCorrRange) {
+		
+		motor.speed(armHingeMotorPin, -armSpeed * getRelUpperPos(pos));
 	}
-	else if (getRelUpperPos(pos) <= fineCorrRange) {
-		motor.speed(armHingeMotorPin, fineCorrSpeed * getRelUpperPos(pos));
+	else if (abs(getRelUpperPos(pos)) <= fineCorrRange) {
+		
+		motor.speed(armHingeMotorPin, -fineCorrSpeed * getRelUpperPos(pos));
 	}
 	else {
+		
 		motor.stop(armHingeMotorPin);
 	}
 	return;
 }
 void moveUpperArm(double voltage) {
-	if (getRelUpperPos(voltage) > fineCorrRange) {
-		motor.speed(armHingeMotorPin, armSpeed * getRelUpperPos(voltage));
+	if (abs(getRelUpperPos(voltage)) > fineCorrRange) {
+		motor.speed(armHingeMotorPin,- armSpeed * getRelUpperPos(voltage));
 	}
-	else if (getRelUpperPos(voltage) <= fineCorrRange) {
-		motor.speed(armHingeMotorPin, fineCorrSpeed * getRelUpperPos(voltage));
+	else if (abs(getRelUpperPos(voltage)) <= fineCorrRange) {
+		motor.speed(armHingeMotorPin,- fineCorrSpeed * getRelUpperPos(voltage));
 	}
 	else {
 		motor.stop(armHingeMotorPin);
@@ -211,6 +221,12 @@ void moveBaseServoPos(int pos) {
 			break;
 		case zipPos:
 			RCServo0.write(servoZ);
+			break;
+		case irPos:
+			RCServo0.write(servoIR);
+			break;
+		case gatePos:
+			RCServo0.write(servoGate);
 			break;
 		}
 	}

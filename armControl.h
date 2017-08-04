@@ -1,7 +1,7 @@
 #ifndef armControl_h
 #define armControl_h
 
-#define upperBaseBound 4.8
+#define upperBaseBound 4.5
 #define lowerBaseBound 3.5
 #define upperHingeBound 3.6
 #define lowerHingeBound 1.7
@@ -38,8 +38,8 @@
 #define servoFive 90
 
 #define drivePos 6
-#define baseD upperBaseBound
-#define hingeD lowerHingeBound
+#define baseD 3.5
+#define hingeD 2.0
 #define servoD 90
 
 #define zipPos 7
@@ -47,11 +47,21 @@
 #define hingeZ upperHingeBound
 #define servoZ 90
 
+#define irPos 8
+#define baseIR 3.84
+#define hingeIR 2.9
+#define servoIR 90
+
+#define gatePos 9
+#define baseGate upperBaseBound
+#define hingeGate 2.67
+#define servoGate 90
+
 
 // define a threshold for measurement error. It is unlikely to read the pot when it is at the exact value defined above.
 // instead try to catch it when it is close;
 #define voltageRange 0.1
-#define fineCorrRange 0.15
+#define fineCorrRange 0.10
 // define a scaling factor for the movement speed of the arm. motor speed = armSpeed*displacement
 
 void setArmSpeed(int speed);

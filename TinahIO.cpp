@@ -12,7 +12,7 @@
 extern LiquidCrystal LCD;
 extern int startbutton();
 extern int stopbutton();
-int side; // 0 if right side, 1 if left side
+int side; // 0 if turn to right. 1 if turn to left
 
 String params[] = { "P ", "I ", "D ", "G ", "IR ", "FlatSpeed ",  "RampSpeed ", "RingSpeed ", "Sml error ", "Med err ", "Lrg err ", "Huge err ", "Arm Spd ", "Fine Arm ", "Side " };
 double vars[numVars] = { 0 };
@@ -56,10 +56,10 @@ void menu() {
 				var = analogRead(6) / 1023.0;
 			}
 			else if (params[param] == "Side ") {
-				var = doubleMap(analogRead(6), 0, 1023, 0, 1);
+				var = gatedKnobMap(6, 0, 1);
 			}
 			else if (params[param] == "Arm Spd " || params[param] == "Fine Arm ") {
-				var = doubleMap(analogRead(6), 0, 1023, 0, 4000);
+				var = doubleMap(analogRead(6), 0, 1023, 0, 20000);
 			}
 			else {
 				var = doubleMap(analogRead(6), 0, 1023, 0, paramMax);
@@ -67,7 +67,7 @@ void menu() {
 
 			if (params[param] == "Side ") {
 				LCD.clear();
-				LCD.print("Select side");
+				LCD.print("Select turn");
 				LCD.setCursor(0, 1);
 				if (var == 1) {
 					LCD.print("L");

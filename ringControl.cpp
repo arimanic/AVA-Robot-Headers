@@ -36,7 +36,7 @@ void setCrossPos(int newPos) {
 	crossPos = newPos;
 }
 
-bool moveToPos(int targetPos) {
+/*bool moveToPos(int targetPos) {
 	Serial.print(getQRD(0));
 	Serial.print(getQRD(1));
 	Serial.print(getQRD(2));
@@ -66,8 +66,47 @@ bool moveToPos(int targetPos) {
 		revStop();
 		return true;
 	}
-}
+}*/
 
+bool moveToPos(int moveTo) {
+	bool onCross;
+	if (!atCross()) {
+		onCross = false;
+		PID4follow();
+	}
+	else { // attempted debouncing
+		delayMicroseconds(1000);
+		if (atCross()) {
+			delayMicroseconds(1000);
+			if (atCross()) {
+				// you are always at a cross here
+				if (!onCross) {
+					// you are now transitioning from offcross to on cross. incremement crossCounter
+					onCross = true;
+					if (crossPos >= numToys - 1) {
+						crossPos = 0;
+					}
+					else {
+						crossPos++;
+					}
+				}
+			}
+		}
+
+		// check if this is the right spot to stop
+
+		if (moveTo == crossPos) {
+			LCD.clear(); //!!!!!!!!
+			printQRDs();
+			extern bool QRDs[];
+			LCD.print(arr2bin4(QRDs));
+			revStop();
+			return true;
+		}
+
+	}
+	return false;
+}
 void toysInWater(double curTime) {
 	/*
 	Given a time, determine which toys have already fallen off their platforms
@@ -116,26 +155,6 @@ void fullCircleMove() {
 int getCrossPos() {
 	return crossPos;
 }
-
-/*void circleMove() {
-//  int crossCount = 0;
-//
-//  if(atCross()){
-//    onCross = true;
-//  } else {
-//    onCross = false;
-//  }
-//
-//  while (crossCount <= 6){
-//  if (atCross() && !onCross) {
-//    crossCount++;
-//  } else if (!atCross() && onCross) {
-//    onCross = false;
-//  }
-//
-//  PID2follow();
-//}
-//}*/
 
 int findNextToy(int pos, double curTime) {
 	toysInWater(curTime);

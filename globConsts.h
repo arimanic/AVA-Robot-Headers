@@ -14,14 +14,11 @@
 #define RSonarPin 2
 #define distanceCounter 3
 
-#define trigPin 31
-#define echoPin 2
-
 // Standard Digital IO pins
-#define QRD0pin 4
-#define QRD1pin 5
-#define QRD2pin 6
-#define QRD3pin 7
+#define QRD0pin 7
+#define QRD1pin 6
+#define QRD2pin 5
+#define QRD3pin 4
 
 // Analog IO Pins
 #define IR0pin 0
@@ -58,9 +55,9 @@
 #define zipTicks 300
 
 // Time constants for stages (milliseconds)
-#define beforeGateMillis 1300
+#define beforeGateMillis 1000
 #define afterGateMillis 1700
-#define onRampMillis 2000
-#define afterRampMillis 1000
+#define onRampMillis 2200
+#define afterRampMillis 1200
 #define zipMillis 3000
 #endif
