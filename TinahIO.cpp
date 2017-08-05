@@ -70,10 +70,10 @@ void menu() {
 				LCD.print("Select turn");
 				LCD.setCursor(0, 1);
 				if (var == 1) {
-					LCD.print("L");
+					LCD.print("R");
 				}
 				else {
-					LCD.print("R");
+					LCD.print("L");
 				}
 
 			}

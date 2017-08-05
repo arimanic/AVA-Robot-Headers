@@ -21,6 +21,8 @@
 
 int armSpeed = 800; // > 0.07 , 4000 < 0.07
 int fineCorrSpeed = 15000;
+double relLowerPos;
+double relUpperPos;
 
 extern motorClass motor;
 
@@ -126,28 +128,46 @@ bool atUpperPos(int pos) {
 	double relUpper = getRelUpperPos(pos);
 	return abs(relUpper) <= voltageRange;
 }
+
+bool atUpperPos(double voltage) {
+	double relUpper = getRelUpperPos(voltage);
+	return abs(relUpper) <= voltageRange;
+}
+
+bool atLowerPos(double voltage) {
+	//Determine if the lower portion of the arm are in the position passed
+	double relLower = getRelLowerPos(voltage);
+	return abs(relLower) <= voltageRange;
+}
 bool atBothPos(int pos) {
 	// Determines if the upper and lower portions of the arm are at the position passed as pos within the error range defined as voltageRange
 	return atUpperPos(pos) && atLowerPos(pos);
 }
 
 void moveLowerArm(int pos) {
-	if (atLowerPos(pos)) {
+	if (!atLowerPos(pos)) {
+		relLowerPos = -10;
+	}
+	double newRelLowerPos = getRelLowerPos(pos);
+	if (newRelLowerPos == relLowerPos) {
 		motor.stop(armBaseMotorPin);
-	}
-	else if (abs(getRelLowerPos(pos)) > fineCorrRange) {
-		motor.speed(armBaseMotorPin, -armSpeed * getRelLowerPos(pos));
-	}
-	else if (abs(getRelLowerPos(pos)) <= fineCorrRange) {
-		motor.speed(armBaseMotorPin, -fineCorrSpeed * getRelLowerPos(pos));
 	}
 	else {
-		motor.stop(armBaseMotorPin);
+		relLowerPos = newRelLowerPos;
+		if (abs(relLowerPos) > fineCorrRange) {
+			motor.speed(armBaseMotorPin, -armSpeed * relLowerPos);
+		}
+		else if (abs(relLowerPos) <= fineCorrRange) {
+			motor.speed(armBaseMotorPin, -fineCorrSpeed * relLowerPos);
+		}
 	}
 	return;
 }
 void moveLowerArm(double voltage) {
-if (abs(getRelLowerPos(voltage)) > fineCorrRange) {
+
+	if (atLowerPos(voltage)) {
+		motor.stop(armBaseMotorPin);
+	} else if (abs(getRelLowerPos(voltage)) > fineCorrRange) {
 		motor.speed(armBaseMotorPin, -armSpeed * getRelLowerPos(voltage));
 	}
 	else if (abs(getRelLowerPos(voltage)) <= fineCorrRange) {
@@ -159,21 +179,28 @@ if (abs(getRelLowerPos(voltage)) > fineCorrRange) {
 	return;
 }
 void moveUpperArm(int pos) {
-	if (atUpperPos(pos)) {
-		motor.stop(armHingeMotorPin);
-	} else if (abs(getRelUpperPos(pos)) > fineCorrRange) {
-		motor.speed(armHingeMotorPin, -armSpeed * getRelUpperPos(pos));
+	if (!atUpperPos(pos)) {
+		relUpperPos = -10;
 	}
-	else if (abs(getRelUpperPos(pos)) <= fineCorrRange) {
-		motor.speed(armHingeMotorPin, -fineCorrSpeed * getRelUpperPos(pos));
+	double newRelUpperPos = getRelUpperPos(pos);
+	if (newRelUpperPos == relUpperPos) {
+		motor.stop(armHingeMotorPin);
 	}
 	else {
-		motor.stop(armHingeMotorPin);
+		relUpperPos = newRelUpperPos;
+		if (abs(relUpperPos) > fineCorrRange) {
+			motor.speed(armHingeMotorPin, -armSpeed * relUpperPos);
+		}
+		else if (abs(relUpperPos) <= fineCorrRange) {
+			motor.speed(armHingeMotorPin, -fineCorrSpeed * relUpperPos);
+		}
 	}
 	return;
 }
 void moveUpperArm(double voltage) {
-	if (abs(getRelUpperPos(voltage)) > fineCorrRange) {
+	if (atUpperPos(voltage)) {
+		motor.stop(armHingeMotorPin);
+	} else 	if (abs(getRelUpperPos(voltage)) > fineCorrRange) {
 		motor.speed(armHingeMotorPin, -armSpeed * getRelUpperPos(voltage));
 	}
 	else if (abs(getRelUpperPos(voltage)) <= fineCorrRange) {
@@ -234,15 +261,52 @@ void moveBaseServoPos(int pos) {
 	}
 }
 void activateArmServo() {
-	RCServo2.write(90);
+	RCServo1.write(110);
 
 }
 void resetArmServo() {
-	RCServo2.write(0);
+	RCServo1.write(180);
+}
+void moveEndServo(int pos) {
+	switch (pos) {
+		switch (pos) {
+		case toyZero:
+			RCServo2.write(endServoZero);
+			break;
+		case toyOne:
+			RCServo2.write(endServoOne);
+			break;
+		case toyTwo:
+			RCServo2.write(endServoTwo);
+			break;
+		case toyThree:
+			RCServo2.write(endServoThree);
+			break;
+		case toyFour:
+			RCServo2.write(endServoFour);
+			break;
+		case toyFive:
+			RCServo2.write(endServoFive);
+			break;
+		case drivePos:
+			RCServo2.write(endServoD);
+			break;
+		case zipPos:
+			RCServo2.write(endServoZ);
+			break;
+		case irPos:
+			RCServo2.write(endServoIR);
+			break;
+		case gatePos:
+			RCServo2.write(endServoGate);
+			break;
+		}
+	}
 }
 
 void moveArm(int pos) {
 	moveLowerArm(pos);
 	moveUpperArm(pos);
 	moveBaseServoPos(pos);
+	//moveEndServo(pos)
 }

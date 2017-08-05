@@ -219,8 +219,8 @@ void armCalibrate() {
 
 	while (1) {
 		printCount++;
-		lowerVoltage = constrainNum(knobToVolt(7), lowerBaseBound, upperBaseBound);
-		upperVoltage = constrainNum(knobToVolt(6), lowerHingeBound, upperHingeBound);
+		lowerVoltage = gatedKnobMap(6,lowerBaseBound, upperBaseBound);
+		upperVoltage = gatedKnobMap(7, lowerHingeBound, upperHingeBound);
 		servoVal = gatedKnobMap(6, 0, 180);
 
 		switch (menuCounter % 5) {

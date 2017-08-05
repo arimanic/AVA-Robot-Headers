@@ -333,7 +333,6 @@ double PID2follow() {
  void crossTurn() {
 	 // Step forward until both middle QRDs are 0 (off tape)
 	 while (QRDs[1] || QRDs[2]) {
-		 Serial.print(1);
 		 LCD.clear();
 		 printQRDs();
 		 getQRDs();
@@ -342,23 +341,19 @@ double PID2follow() {
 	 // Turn until at least one middle QRD finds tape
 	 if (leftSide()){
 		 while (!(QRDs[1] || QRDs[2])) {
-			 Serial.print(2);
 			 getQRDs();
 			 LCD.clear();
 			 printQRDs();
-			 setMotors(-255, 0, 0);
+			 setMotors(-255, 100, 0);
 		 }
-	 }
-	 else {
+	 } else {
 		 while (!(QRDs[1] || QRDs[2])) {
-			 Serial.print(2);
 			 getQRDs();
 			 LCD.clear();
 			 printQRDs();
-			 setMotors(0, -255, 0);
+			 setMotors(1000, -255, 0);
 		 }
-	 }
-	 Serial.print(3);
+	 }	
 	 setMotors(0, 0, 0);
 }
 
