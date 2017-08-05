@@ -3,6 +3,19 @@
 #include "globConsts.h"
 double IRs[numIR] = { 0 };
 int irThresh;
+long IRtimer;
+
+void setIRTimer(long time) {
+	IRtimer = time;
+}
+
+long getIRTimer() {
+	return IRtimer;
+}
+
+long timeLeft(long time) {
+	return IRtimer + 5000L - time;
+}
 
 void setIRThresh(int thresh) {
 	irThresh = thresh;

@@ -8,33 +8,33 @@
 #define hingeCollision 3.10
 
 #define toyZero 0
-#define baseZero 4.5
-#define hingeZero 2.0
+#define baseZero upperBaseBound
+#define hingeZero upperHingeBound
 #define servoZero 90
 
 #define toyOne 1
-#define baseOne 4.5
-#define hingeOne 2.0
+#define baseOne upperBaseBound
+#define hingeOne upperHingeBound
 #define servoOne 90
 
 #define toyTwo 2
-#define baseTwo 4.5
-#define hingeTwo 2.0
+#define baseTwo upperBaseBound
+#define hingeTwo upperHingeBound
 #define servoTwo 90
 
 #define toyThree 3
-#define baseThree 4.5
-#define hingeThree 2.0
+#define baseThree upperBaseBound
+#define hingeThree upperHingeBound
 #define servoThree 90
 
 #define toyFour 4
-#define baseFour 4.5
-#define hingeFour 2.0
+#define baseFour upperBaseBound
+#define hingeFour upperHingeBound
 #define servoFour 90
 
 #define toyFive 5
-#define baseFive 4.5
-#define hingeFive 2.0
+#define baseFive upperBaseBound
+#define hingeFive upperHingeBound
 #define servoFive 90
 
 #define drivePos 6
@@ -60,8 +60,9 @@
 
 // define a threshold for measurement error. It is unlikely to read the pot when it is at the exact value defined above.
 // instead try to catch it when it is close;
-#define voltageRange 0.1
+#define voltageRange 0.06;
 #define fineCorrRange 0.10
+
 // define a scaling factor for the movement speed of the arm. motor speed = armSpeed*displacement
 
 void setArmSpeed(int speed);
