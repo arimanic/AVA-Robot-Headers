@@ -25,7 +25,7 @@ double speedScale;
 double flatSpeed;
 double rampSpeed;
 double ringSpeed;
-double slowSpeed = 0.2;
+double slowSpeed = 0.20;
 // D
 double lastError, error, recentError;
 long prevDTime = 0;
@@ -207,8 +207,8 @@ double getP2() {
 
 	switch (bin2) {
 	case straight2:
-	error = 0;
-	break;
+		error = 0;
+		break;
 
 	case sLeft2:
 		error = -smallErr;
@@ -248,9 +248,9 @@ double getD() {
 	lastError = error;
 
 	//if (abs(error) < abs(recentError)) {
-		return ((double)kd * (error - recentError)) / ((long double)(prevDTime + curDTime));
-//	}
-//	return 0;
+	return ((double)kd * (error - recentError)) / ((long double)(prevDTime + curDTime));
+	//	}
+	//	return 0;
 }
 
 void getQRDs() {
@@ -259,7 +259,7 @@ void getQRDs() {
 	QRDs[1] = digitalRead(QRD1pin);
 	QRDs[2] = digitalRead(QRD2pin);
 	QRDs[3] = digitalRead(QRD3pin);
-	
+
 }
 bool getQRD(int QRDnum) {
 	// Reads the given QRD sensor and stores boolean value in QRDs array 
@@ -270,7 +270,7 @@ bool getQRD(int QRDnum) {
 double getDist(int ticks) {
 	double rotations = ticks / 24.0;
 	double circumf = PI*wheelDiam;
-	return rotations * circumf * 2/3;
+	return rotations * circumf * 2 / 3;
 }
 bool getLastTurn() {
 	return lastTurn;
@@ -280,22 +280,22 @@ bool getLastTurn() {
 bool atCross() {
 	getQRDs();
 	int binary = arr2bin4(QRDs);
-	switch(binary){
+	switch (binary) {
 	case 7: // 0111
 		break;
-	/*case 9: // 1001
-		break;
-	case 11: // 1011
-		break;
-	case 13: // 1101
-		break;*/
+		/*case 9: // 1001
+			break;
+		case 11: // 1011
+			break;
+		case 13: // 1101
+			break;*/
 	case 14: // 1110
 		break;
 	case 15: // 1111
 		break;
 	default:
 		return false;
-		
+
 	}
 
 	return true;
@@ -321,89 +321,96 @@ double PID2follow() {
 	return con;
 }
 
- void stepMotors(long time) {
-	 long startStep = millis();
-	 while (millis() - startStep < time) {
-		 PID4follow();
-	 }
+void stepMotors(long time) {
+	long startStep = millis();
+	while (millis() - startStep < time) {
+		if (!leftSide()) {
+			setMotors(-255, 100, 0);
+		}
+		else {
+			setMotors(100, -255, 0);
+		}
 
-	 setMotors(0, 0, 0);
- }
-
- void crossTurn() {
-	 // Step forward until both middle QRDs are 0 (off tape)
-	 while (QRDs[1] || QRDs[2]) {
-		 LCD.clear();
-		 printQRDs();
-		 getQRDs();
-		 stepMotors(50);
-	 }
-	 // Turn until at least one middle QRD finds tape
-	 if (leftSide()){
-		 while (!(QRDs[1] || QRDs[2])) {
-			 getQRDs();
-			 LCD.clear();
-			 printQRDs();
-			 setMotors(-255, 100, 0);
-		 }
-	 } else {
-		 while (!(QRDs[1] || QRDs[2])) {
-			 getQRDs();
-			 LCD.clear();
-			 printQRDs();
-			 setMotors(1000, -255, 0);
-		 }
-	 }	
-	 setMotors(0, 0, 0);
+		setMotors(0, 0, 0);
+	}
 }
 
- 
- void revStop() {
-	 long startingTime = millis();
-	 while (millis() - startingTime < 5 && !stopFlag) {
-		 motor.speed(RmotorPin, -255);
-		 motor.speed(LmotorPin, -255);
-	 }
-	 stopFlag = 1;
-	 motor.speed(RmotorPin, 0);
-	 motor.speed(LmotorPin, 0);
+void crossTurn() {
+	// Step forward until both middle QRDs are 0 (off tape)
+	while (QRDs[1] || QRDs[2]) {
+		LCD.clear();
+		printQRDs();
+		getQRDs();
+		stepMotors(150);
+	}
+	// Turn until at least one middle QRD finds tape
+	if (!leftSide()) {
+		long turnTime = millis();
+		while (!(QRDs[1] || QRDs[2])) {
+			getQRDs();
+			LCD.clear();
+			printQRDs();
+			setMotors(-255,200, 0);
+		}
+	}
+	else {
+		while (!(QRDs[1] || QRDs[2])) {
+			getQRDs();
+			LCD.clear();
+			printQRDs();
+			setMotors(200, -255, 0);
+		}
+	}
+	setMotors(0, 0, 0);
+}
 
- } 
- //uses while. may get stuck here
- void turnAround(long turnTime) {
-	 long turnStart = millis();
 
-	 while (millis() - turnStart < turnTime) {
-		 setMotors(255, -255, 0);
-	 }
+void revStop() {
+	long startingTime = millis();
+	while (millis() - startingTime < 5 && !stopFlag) {
+		motor.speed(RmotorPin, -255);
+		motor.speed(LmotorPin, -255);
+	}
+	stopFlag = 1;
+	motor.speed(RmotorPin, 0);
+	motor.speed(LmotorPin, 0);
 
-	 setMotors(0, 0, 0);
- }
- void stageSpeed(int stage) {
-	 switch (stage) {
-	 case beforeGateStage:
-		 speedScale = flatSpeed;
-		 break;
+}
+//uses while. may get stuck here
+void turnAround(long turnTime) {
+	long turnStart = millis();
 
-	 case afterGateStage:
-		 speedScale = flatSpeed / 2;
-		 break;
+	while (millis() - turnStart < turnTime) {
+		setMotors(255, -255, 0);
+	}
 
-	 case onRampStage:
-		 speedScale = rampSpeed;
-		 break;
+	setMotors(0, 0, 0);
+}
+void stageSpeed(int stage) {
+	switch (stage) {
+	case beforeGateStage:
+		speedScale = flatSpeed;
+		break;
 
-	 case afterRampStage:
-		 speedScale = flatSpeed / 2;
-		 break;
+	case afterGateStage:
+		speedScale = flatSpeed / 2;
+		break;
 
-	 case ringStage:
-		 speedScale = ringSpeed;
-		 break;
+	case onRampStage:
+		speedScale = rampSpeed;
+		break;
 
-	 case slowStage:
-		 speedScale = slowSpeed;
-		 break;
+	case afterRampStage:
+		speedScale = flatSpeed / 2;
+		break;
 
-	 }
- }
+	case ringStage:
+		speedScale = ringSpeed;
+		break;
+
+	case slowStage:
+		speedScale = slowSpeed;
+		break;
+
+	}
+}

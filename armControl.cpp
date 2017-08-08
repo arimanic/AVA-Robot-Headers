@@ -3,6 +3,7 @@
 #include "ServoTINAH.h"
 #include "motor.h"
 #include "armControl.h"
+#include "TinahIO.h"
 
 // Arm movement is controlled by these functions.
 // Movement is split into upper arm, lower arm, and base servo
@@ -309,4 +310,16 @@ void moveArm(int pos) {
 	moveUpperArm(pos);
 	moveBaseServoPos(pos);
 	//moveEndServo(pos)
+}
+void stableLift() {
+	if (!atLowerPos(zipPos)) {
+		moveLowerArm(zipPos);
+	}
+	else {
+		moveUpperArm(zipPos);
+		double angle = getHingeMotorPot();
+		double potMap = doubleMap(angle, hingeFive, baseZ, endServoFive, endServoZ);
+		RCServo2.write(potMap);
+
+	}
 }

@@ -105,5 +105,5 @@ void resetArmServo();
 void moveEndServo(int pos);
 
 void moveArm(int pos);
-
+void stableLift();
 #endif // armControl_h

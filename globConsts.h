@@ -20,6 +20,8 @@
 #define QRD2pin 5
 #define QRD3pin 4
 
+#define flipSwitchPin 8
+
 // Analog IO Pins
 #define IR0pin 0
 #define IR1pin 1 // should be 1 but ir 1 is not reading properly. 
@@ -58,6 +60,6 @@
 #define beforeGateMillis 1000
 #define afterGateMillis 1700
 #define onRampMillis 2500
-#define afterRampMillis 1200
+#define afterRampMillis 1600
 #define zipMillis 3000
 #endif

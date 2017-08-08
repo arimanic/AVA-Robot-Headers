@@ -17,6 +17,10 @@ int side; // 0 if turn to right. 1 if turn to left
 String params[] = { "P ", "I ", "D ", "G ", "IR ", "FlatSpeed ",  "RampSpeed ", "RingSpeed ", "Sml error ", "Med err ", "Lrg err ", "Huge err ", "Arm Spd ", "Fine Arm ", "Side " };
 double vars[numVars] = { 0 };
 
+bool flipSwitch() {
+	return digitalRead(flipSwitchPin);
+}
+
 void menu() {
 	int param, printMenu;
 	double var;

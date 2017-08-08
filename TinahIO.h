@@ -1,6 +1,8 @@
 #ifndef tinah_io
 #define tinah_io
 
+bool flipSwitch();
+
 void menu();
 void printParams();
 void printQRDs();
