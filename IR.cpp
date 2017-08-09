@@ -29,25 +29,32 @@ int getIRThresh() {
 // Function for stopping at the 10/1kHz gate
 // returns true if any of the IR sensors read a value higher than the threshold set in the menu
 bool gateStop() {
+	bool a = false;
+	bool b = false;
 	getIRs();
 	for (int i = 0; i < numIR; i++) {
 		if (IRs[i] >= irThresh) {
-			getIRs();
-			for (int j = 0; j < numIR; i++) {
-				if (IRs[i] >= irThresh) {
-					return true;
-				}
-			}
+			a = true;
+			break;
 		}
 	}
-	return false;
+	delay(30);
+	getIRs();
+	for (int j = 0; j < numIR; j++) {
+		if (IRs[j] >= irThresh) {
+			b = true;
+			break;
+		}
+
+	}
+	return a && b;
 }
 
 void getIRs() {
 	// Reads all IR sensors and stores values in IRs array	
-		IRs[0] = analogRead(IR0pin);
-		IRs[1] = analogRead(IR1pin);
-		IRs[2] = analogRead(IR2pin);
+	IRs[0] = analogRead(IR0pin);
+	IRs[1] = analogRead(IR1pin);
+	IRs[2] = analogRead(IR2pin);
 }
 
 int getIR(int IRNum) {
