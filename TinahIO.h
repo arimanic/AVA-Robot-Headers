@@ -1,7 +1,8 @@
 #ifndef tinah_io
 #define tinah_io
 
-bool flipSwitch();
+bool tiltSwitch();
+bool debounceTiltSwitch();
 
 void menu();
 void printParams();

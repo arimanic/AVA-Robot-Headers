@@ -334,7 +334,12 @@ void stepMotors(long time) {
 		setMotors(0, 0, 0);
 	}
 }
-
+void PID4step(long time) {
+	long startTime = millis();
+	while (millis() - startTime > time) {
+		PID4follow();
+	}
+}
 void crossTurn() {
 	// Step forward until both middle QRDs are 0 (off tape)
 	while (QRDs[1] || QRDs[2]) {
@@ -344,22 +349,23 @@ void crossTurn() {
 		stepMotors(150);
 	}
 	// Turn until at least one middle QRD finds tape
-	if (!leftSide()) {
+	if (leftSide()) {
+		while (!(QRDs[1] || QRDs[2])) {
+			getQRDs();
+			LCD.clear();
+			printQRDs();
+			setMotors(-255, 200, 0);
+		}
+	}
+	else {
 		long turnTime = millis();
 		while (!(QRDs[1] || QRDs[2])) {
 			getQRDs();
 			LCD.clear();
 			printQRDs();
-			setMotors(-255,200, 0);
+			setMotors(-255, 200, 0);
 		}
-	}
-	else {
-		while (!(QRDs[1] || QRDs[2])) {
-			getQRDs();
-			LCD.clear();
-			printQRDs();
-			setMotors(200, -255, 0);
-		}
+		
 	}
 	setMotors(0, 0, 0);
 }
@@ -367,7 +373,7 @@ void crossTurn() {
 
 void revStop() {
 	long startingTime = millis();
-	while (millis() - startingTime < 5 && !stopFlag) {
+	while (millis() - startingTime < 50 * getSpeedScale() && !stopFlag) {
 		motor.speed(RmotorPin, -255);
 		motor.speed(LmotorPin, -255);
 	}
@@ -393,7 +399,7 @@ void stageSpeed(int stage) {
 		break;
 
 	case afterGateStage:
-		speedScale = flatSpeed / 2;
+		speedScale = 0.5;
 		break;
 
 	case onRampStage:
@@ -401,7 +407,7 @@ void stageSpeed(int stage) {
 		break;
 
 	case afterRampStage:
-		speedScale = flatSpeed / 2;
+		speedScale = 0.5;
 		break;
 
 	case ringStage:

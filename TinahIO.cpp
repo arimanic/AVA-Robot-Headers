@@ -8,23 +8,34 @@
 #include "arrayHelpers.h"
 #include <LiquidCrystal.h>
 #include "armControl.h"
+#include "motor.h"
 
 extern LiquidCrystal LCD;
 extern int startbutton();
 extern int stopbutton();
+extern motorClass motor;
 int side; // 0 if turn to right. 1 if turn to left
 
 String params[] = { "P ", "I ", "D ", "G ", "IR ", "FlatSpeed ",  "RampSpeed ", "RingSpeed ", "Sml error ", "Med err ", "Lrg err ", "Huge err ", "Arm Spd ", "Fine Arm ", "Side " };
 double vars[numVars] = { 0 };
 
-bool flipSwitch() {
-	return digitalRead(flipSwitchPin);
+bool tiltSwitch() {
+	return digitalRead(tiltSwitchPin);
 }
+bool debounceTiltSwitch() {
+	if (tiltSwitch()) {
+		delay(10);
+		if (tiltSwitch()) {
+			return true;
+		}
+	}
+	return false;
+}	 
 
 void menu() {
 	int param, printMenu;
 	double var;
-	setMotors(0, 0, 0);
+	motor.stop_all();
 
 	// Load in preloaded variables
 	vars[0] = getKP();

@@ -60,9 +60,12 @@ void armDebug() {
 			LCD.print(atLowerPos(pos));
 
 		}
-		moveLowerArm(pos);
-		moveUpperArm(pos);
-		moveBaseServo(servo);
+		moveArm(pos);
+		if (startbutton()) {
+			while (startbutton()) {
+			}
+			setArmSafe(false);
+		}
 
 	}
 }
@@ -244,6 +247,7 @@ void armCalibrate() {
 				LCD.print(" ");
 				LCD.print(getHingeMotorPot());
 				LCD.print(" ");
+				LCD.print(getArmSafe());
 				LCD.print(getRelUpperPos(upperVoltage));
 			}
 			break;
@@ -317,7 +321,9 @@ void armCalibrate() {
 			}
 			menuCounter++;
 		}
+		
 	}
+	
 }
 
 void motorDebug() {

@@ -22,6 +22,7 @@
 
 int armSpeed = 800; // > 0.07 , 4000 < 0.07
 int fineCorrSpeed = 15000;
+bool armSafe;
 double relLowerPos;
 double relUpperPos;
 
@@ -37,6 +38,9 @@ void setArmSpeed(int speed) {
 }
 void setFineArmSpeed(int speed) {
 	fineCorrSpeed = speed;
+}
+void setArmSafe(bool safe) {
+	armSafe = safe;
 }
 
 int getArmSpeed() {
@@ -118,6 +122,9 @@ double getRelUpperPos(int pos) {
 
 	}
 }
+bool getArmSafe() {
+	return armSafe;
+}
 
 bool atLowerPos(int pos) {
 	//Determine if the lower portion of the arm are in the position passed
@@ -146,11 +153,9 @@ bool atBothPos(int pos) {
 }
 
 void moveLowerArm(int pos) {
-	if (!atLowerPos(pos)) {
-		relLowerPos = -10;
-	}
+
 	double newRelLowerPos = getRelLowerPos(pos);
-	if (newRelLowerPos == relLowerPos) {
+	if (newRelLowerPos - relLowerPos < 0.02 && atLowerPos(pos)) {
 		motor.stop(armBaseMotorPin);
 	}
 	else {
@@ -180,11 +185,8 @@ void moveLowerArm(double voltage) {
 	return;
 }
 void moveUpperArm(int pos) {
-	if (!atUpperPos(pos)) {
-		relUpperPos = -10;
-	}
 	double newRelUpperPos = getRelUpperPos(pos);
-	if (newRelUpperPos == relUpperPos) {
+	if (newRelUpperPos - relUpperPos < 0.02 && atUpperPos(pos)) {
 		motor.stop(armHingeMotorPin);
 	}
 	else {
@@ -226,7 +228,6 @@ void moveBaseServo(int val) {
 }
 void moveBaseServoPos(int pos) {
 	switch (pos) {
-		switch (pos) {
 		case toyZero:
 			RCServo0.write(servoZero);
 			break;
@@ -253,16 +254,20 @@ void moveBaseServoPos(int pos) {
 			RCServo0.write(servoZ);
 			break;
 		case irPos:
-			RCServo0.write(servoIR);
+			if (leftSide()) {
+				RCServo0.write(servoIR - 5);
+			}
+			else {
+				RCServo0.write(servoIR + 5);
+			}
 			break;
 		case gatePos:
 			RCServo0.write(servoGate);
 			break;
-		}
 	}
 }
 void activateArmServo() {
-	RCServo1.write(110);
+	RCServo1.write(100);
 
 }
 void resetArmServo() {
@@ -270,7 +275,6 @@ void resetArmServo() {
 }
 void moveEndServo(int pos) {
 	switch (pos) {
-		switch (pos) {
 		case toyZero:
 			RCServo2.write(endServoZero);
 			break;
@@ -302,14 +306,21 @@ void moveEndServo(int pos) {
 			RCServo2.write(endServoGate);
 			break;
 		}
-	}
 }
 
 void moveArm(int pos) {
-	moveLowerArm(pos);
-	moveUpperArm(pos);
-	moveBaseServoPos(pos);
-	//moveEndServo(pos)
+	if (!atUpperPos(upperHingeBound) && !armSafe) {
+		moveUpperArm(upperHingeBound);
+		motor.speed(armBaseMotorPin, 0);
+		moveBaseServoPos(pos);
+	}
+	else {
+		armSafe = true;
+		moveLowerArm(pos);
+		moveUpperArm(pos);
+		moveBaseServoPos(pos);
+		moveEndServo(pos);
+	}
 }
 void stableLift() {
 	if (!atLowerPos(zipPos)) {

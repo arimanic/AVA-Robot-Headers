@@ -32,7 +32,12 @@ bool gateStop() {
 	getIRs();
 	for (int i = 0; i < numIR; i++) {
 		if (IRs[i] >= irThresh) {
-			return true;
+			getIRs();
+			for (int j = 0; j < numIR; i++) {
+				if (IRs[i] >= irThresh) {
+					return true;
+				}
+			}
 		}
 	}
 	return false;

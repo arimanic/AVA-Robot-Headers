@@ -20,7 +20,7 @@
 #define QRD2pin 5
 #define QRD3pin 4
 
-#define flipSwitchPin 8
+#define tiltSwitchPin 8
 
 // Analog IO Pins
 #define IR0pin 0
@@ -57,7 +57,7 @@
 #define zipTicks 300
 
 // Time constants for stages (milliseconds)
-#define beforeGateMillis 1000
+#define beforeGateMillis 700
 #define afterGateMillis 1700
 #define onRampMillis 2500
 #define afterRampMillis 1600

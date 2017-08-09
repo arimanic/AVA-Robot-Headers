@@ -45,6 +45,7 @@ double getD();
 double PID4follow();
 double PID2follow();
 void stepMotors(long time);
+void PID4step(long time);
 double getDist(int ticks);
 
 void crossTurn();

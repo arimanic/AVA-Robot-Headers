@@ -96,11 +96,6 @@ bool moveToPos(int moveTo) {
 		// check if this is the right spot to stop
 
 		if (moveTo == crossPos) {
-			LCD.clear(); //!!!!!!!!
-			printQRDs();
-			extern bool QRDs[];
-			LCD.print(arr2bin4(QRDs));
-			revStop();
 			return true;
 		}
 
