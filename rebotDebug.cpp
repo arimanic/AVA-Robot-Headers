@@ -36,19 +36,20 @@ void sonarTest() {
 }
 
 void armDebug() {
+	bool armSwitch;
 	int pos;
-	int servo;
+	int speed;
 	while (1) {
 		printCount++;
 		pos = gatedKnobMap(6, 0, 9);
-		servo = map(analogRead(7), 0, 1023, -2, 182);
+		speed = gatedKnobMap(7, 0, 5000);
 		if (printCount > 400) {
 			printCount = 0;
 
 			LCD.clear();
 			LCD.print(pos);
 			LCD.print(" ");
-			LCD.print(servo);
+			LCD.print(speed);
 			LCD.print(" ");
 			LCD.print(getRelLowerPos(pos));
 			LCD.print(" ");
@@ -61,11 +62,14 @@ void armDebug() {
 
 		}
 		moveArm(pos);
-		if (startbutton()) {
-			while (startbutton()) {
+
+		if (stopbutton()) {
+			while (stopbutton()) {
 			}
-			setArmSafe(false);
+			menu();
 		}
+
+			setFineArmSpeed(speed);
 
 	}
 }

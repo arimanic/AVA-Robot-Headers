@@ -1,6 +1,13 @@
 #include <IR.h>
 #include <Arduino.h>
 #include "globConsts.h"
+
+int readCount = 0;
+
+double prevSum0 = 0;
+double prevSum1 = 0;
+double prevSum2 = 0;
+
 double IRs[numIR] = { 0 };
 int irThresh;
 long IRtimer;
@@ -28,27 +35,53 @@ int getIRThresh() {
 
 // Function for stopping at the 10/1kHz gate
 // returns true if any of the IR sensors read a value higher than the threshold set in the menu
+
 bool gateStop() {
-	bool a = false;
-	bool b = false;
+	int numLoops = 20;
+	double sum0 = 0;
+	double sum1 = 0;
+	double sum2 = 0;
+
+	double totSum0 = 0;
+	double totSum1 = 0;
+	double totSum2 = 0;
+
+	for (int i = 0; i < numLoops; i++) {
+		getIRs();
+		sum0 += IRs[0];
+		sum1 += IRs[1];
+		sum2 += IRs[2];
+	}
+	totSum0 = (sum0 + prevSum0) / (2*numLoops);
+	totSum1 = (sum1 + prevSum1) / (2 * numLoops);
+	totSum2 = (sum2 + prevSum2) / (2 * numLoops);
+
+	prevSum0 = sum0;
+	prevSum1 = sum1;
+	prevSum2 = sum2;
+
+	Serial.print(totSum0);
+	Serial.print(" ");
+	Serial.print(totSum1);
+	Serial.print(" ");
+	Serial.println(totSum2);
+		
+	return totSum0 > irThresh || totSum1 > irThresh || totSum2 > irThresh;
+}
+
+/*bool gateStop() {
 	getIRs();
 	for (int i = 0; i < numIR; i++) {
 		if (IRs[i] >= irThresh) {
-			a = true;
-			break;
+			delayMicroseconds(1);
+			getIR(i);
+			if (IRs[i]) {
+				return true;
+			}
 		}
 	}
-	delay(30);
-	getIRs();
-	for (int j = 0; j < numIR; j++) {
-		if (IRs[j] >= irThresh) {
-			b = true;
-			break;
-		}
-
-	}
-	return a && b;
-}
+	return false;
+}*/
 
 void getIRs() {
 	// Reads all IR sensors and stores values in IRs array	

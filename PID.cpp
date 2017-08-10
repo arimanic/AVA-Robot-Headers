@@ -336,7 +336,7 @@ void stepMotors(long time) {
 }
 void PID4step(long time) {
 	long startTime = millis();
-	while (millis() - startTime > time) {
+	while (millis() - startTime < time) {
 		PID4follow();
 	}
 }

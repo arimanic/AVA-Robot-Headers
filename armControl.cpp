@@ -21,7 +21,7 @@
 
 
 int armSpeed = 800; // > 0.07 , 4000 < 0.07
-int fineCorrSpeed = 15000;
+int fineCorrSpeed = 1000;
 bool armSafe;
 double relLowerPos;
 double relUpperPos;
@@ -155,7 +155,7 @@ bool atBothPos(int pos) {
 void moveLowerArm(int pos) {
 
 	double newRelLowerPos = getRelLowerPos(pos);
-	if (newRelLowerPos - relLowerPos < 0.02 && atLowerPos(pos)) {
+	if (abs(newRelLowerPos - relLowerPos) < 0.15 && atLowerPos(pos)) {
 		motor.stop(armBaseMotorPin);
 	}
 	else {
@@ -173,7 +173,8 @@ void moveLowerArm(double voltage) {
 
 	if (atLowerPos(voltage)) {
 		motor.stop(armBaseMotorPin);
-	} else if (abs(getRelLowerPos(voltage)) > fineCorrRange) {
+	}
+	else if (abs(getRelLowerPos(voltage)) > fineCorrRange) {
 		motor.speed(armBaseMotorPin, -armSpeed * getRelLowerPos(voltage));
 	}
 	else if (abs(getRelLowerPos(voltage)) <= fineCorrRange) {
@@ -186,7 +187,7 @@ void moveLowerArm(double voltage) {
 }
 void moveUpperArm(int pos) {
 	double newRelUpperPos = getRelUpperPos(pos);
-	if (newRelUpperPos - relUpperPos < 0.02 && atUpperPos(pos)) {
+	if (abs(newRelUpperPos - relUpperPos) < 0.15 && atUpperPos(pos)) {
 		motor.stop(armHingeMotorPin);
 	}
 	else {
@@ -203,7 +204,8 @@ void moveUpperArm(int pos) {
 void moveUpperArm(double voltage) {
 	if (atUpperPos(voltage)) {
 		motor.stop(armHingeMotorPin);
-	} else 	if (abs(getRelUpperPos(voltage)) > fineCorrRange) {
+	}
+	else 	if (abs(getRelUpperPos(voltage)) > fineCorrRange) {
 		motor.speed(armHingeMotorPin, -armSpeed * getRelUpperPos(voltage));
 	}
 	else if (abs(getRelUpperPos(voltage)) <= fineCorrRange) {
@@ -228,42 +230,42 @@ void moveBaseServo(int val) {
 }
 void moveBaseServoPos(int pos) {
 	switch (pos) {
-		case toyZero:
-			RCServo0.write(servoZero);
-			break;
-		case toyOne:
-			RCServo0.write(servoOne);
-			break;
-		case toyTwo:
-			RCServo0.write(servoTwo);
-			break;
-		case toyThree:
-			RCServo0.write(servoThree);
-			break;
-		case toyFour:
-			RCServo0.write(servoFour);
-			break;
-		case toyFive:
-			RCServo0.write(servoFive);
-			break;
+	case toyZero:
+		RCServo0.write(servoZero);
+		break;
+	case toyOne:
+		RCServo0.write(servoOne);
+		break;
+	case toyTwo:
+		RCServo0.write(servoTwo);
+		break;
+	case toyThree:
+		RCServo0.write(servoThree);
+		break;
+	case toyFour:
+		RCServo0.write(servoFour);
+		break;
+	case toyFive:
+		RCServo0.write(servoFive);
+		break;
 
-		case drivePos:
-			RCServo0.write(servoD);
-			break;
-		case zipPos:
-			RCServo0.write(servoZ);
-			break;
-		case irPos:
-			if (leftSide()) {
-				RCServo0.write(servoIR - 5);
-			}
-			else {
-				RCServo0.write(servoIR + 5);
-			}
-			break;
-		case gatePos:
-			RCServo0.write(servoGate);
-			break;
+	case drivePos:
+		RCServo0.write(servoD);
+		break;
+	case zipPos:
+		RCServo0.write(servoZ);
+		break;
+	case irPos:
+		if (leftSide()) {
+			RCServo0.write(servoIR - 5);
+		}
+		else {
+			RCServo0.write(servoIR + 5);
+		}
+		break;
+	case gatePos:
+		RCServo0.write(servoGate);
+		break;
 	}
 }
 void activateArmServo() {
@@ -271,41 +273,41 @@ void activateArmServo() {
 
 }
 void resetArmServo() {
-	RCServo1.write(180);
+	RCServo1.write(30);
 }
 void moveEndServo(int pos) {
 	switch (pos) {
-		case toyZero:
-			RCServo2.write(endServoZero);
-			break;
-		case toyOne:
-			RCServo2.write(endServoOne);
-			break;
-		case toyTwo:
-			RCServo2.write(endServoTwo);
-			break;
-		case toyThree:
-			RCServo2.write(endServoThree);
-			break;
-		case toyFour:
-			RCServo2.write(endServoFour);
-			break;
-		case toyFive:
-			RCServo2.write(endServoFive);
-			break;
-		case drivePos:
-			RCServo2.write(endServoD);
-			break;
-		case zipPos:
-			RCServo2.write(endServoZ);
-			break;
-		case irPos:
-			RCServo2.write(endServoIR);
-			break;
-		case gatePos:
-			RCServo2.write(endServoGate);
-			break;
-		}
+	case toyZero:
+		RCServo2.write(endServoZero);
+		break;
+	case toyOne:
+		RCServo2.write(endServoOne);
+		break;
+	case toyTwo:
+		RCServo2.write(endServoTwo);
+		break;
+	case toyThree:
+		RCServo2.write(endServoThree);
+		break;
+	case toyFour:
+		RCServo2.write(endServoFour);
+		break;
+	case toyFive:
+		RCServo2.write(endServoFive);
+		break;
+	case drivePos:
+		RCServo2.write(endServoD);
+		break;
+	case zipPos:
+		RCServo2.write(endServoZ);
+		break;
+	case irPos:
+		RCServo2.write(endServoIR);
+		break;
+	case gatePos:
+		RCServo2.write(endServoGate);
+		break;
+	}
 }
 
 void moveArm(int pos) {

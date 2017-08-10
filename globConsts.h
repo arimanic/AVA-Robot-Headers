@@ -60,6 +60,6 @@
 #define beforeGateMillis 700
 #define afterGateMillis 1700
 #define onRampMillis 2500
-#define afterRampMillis 1600
+#define afterRampMillis 1200
 #define zipMillis 3000
 #endif

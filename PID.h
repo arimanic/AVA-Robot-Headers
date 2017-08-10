@@ -27,14 +27,11 @@ double getSpeedScale();
 double getRampSpeed();
 double getFlatSpeed();
 double getRingSpeed();
-
-
 bool getLastTurn();
-
-void setMotors(double L, double R, double ctrl);
-
 void getQRDs();
 bool getQRD(int QRDnum);
+
+void setMotors(double L, double R, double ctrl);
 
 bool atCross();
 
@@ -50,7 +47,7 @@ double getDist(int ticks);
 
 void crossTurn();
 void revStop();
-void turnAround();
+void turnAround(long turnTime);
 void stageSpeed(int stage);
 
 #endif
